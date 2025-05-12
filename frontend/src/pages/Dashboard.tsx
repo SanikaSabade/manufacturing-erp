@@ -10,7 +10,7 @@ export default function Dashboard() {
         <button onClick={() => navigate('/users')} className="btn bg-blue-500 text-white p-4 rounded shadow">
           Users
         </button>
-        {/* <button onClick={() => navigate('/materials')} className="btn bg-green-500 text-white p-4 rounded shadow">
+        <button onClick={() => navigate('/materials')} className="btn bg-green-500 text-white p-4 rounded shadow">
           Materials
         </button>
         <button onClick={() => navigate('/inventory')} className="btn bg-yellow-500 text-white p-4 rounded shadow">
@@ -18,7 +18,7 @@ export default function Dashboard() {
         </button>
         <button onClick={() => navigate('/activities')} className="btn bg-purple-500 text-white p-4 rounded shadow">
           Activities
-        </button> */}
+        </button>
       </div>
     </div>
   );

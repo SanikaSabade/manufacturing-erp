@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useReactTable, type ColumnDef, flexRender, getCoreRowModel } from '@tanstack/react-table';
+import { useTable } from 'react-table';
 import axios from 'axios';
 
 const UserTable: React.FC = () => {
@@ -15,16 +15,27 @@ const UserTable: React.FC = () => {
     fetchData();
   }, []);
 
-  // Define columns for the table
-  const columns: ColumnDef<any>[] = React.useMemo(
+  const columns = React.useMemo(
     () => [
-      { header: 'Name', accessorKey: 'name' },
-      { header: 'Email', accessorKey: 'email' },
-      { header: 'Role', accessorKey: 'role' },
-      { header: 'Status', accessorKey: 'status' },
       {
-        header: 'Actions',
-        cell: ({ row }: any) => (
+        Header: 'Name',
+        accessor: 'name', 
+      },
+      {
+        Header: 'Email',
+        accessor: 'email',
+      },
+      {
+        Header: 'Role',
+        accessor: 'role',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+      },
+      {
+        Header: 'Actions',
+        Cell: ({ row }: any) => (
           <div className="flex space-x-2">
             <button className="btn" onClick={() => alert(`Edit user ${row.original._id}`)}>Edit</button>
             <button className="btn" onClick={() => alert(`Delete user ${row.original._id}`)}>Delete</button>
@@ -35,37 +46,46 @@ const UserTable: React.FC = () => {
     []
   );
 
-  // Set up the table instance
-  const table = useReactTable({
-    data,
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+  } = useTable({
     columns,
-    getCoreRowModel: getCoreRowModel(),
+    data,
   });
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full table-auto">
+      <table {...getTableProps()} className="min-w-full table-auto">
         <thead>
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <th key={header.id} className="p-2 border-b">
-                  {flexRender(header.column.columnDef.header, header.getContext())}
+          {headerGroups.map(headerGroup => (
+            <tr {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+              {headerGroup.headers.map(column => (
+                <th {...column.getHeaderProps()} key={column.id} className="p-2 border-b">
+                  {column.render('Header')}
                 </th>
               ))}
             </tr>
           ))}
         </thead>
-        <tbody>
-          {table.getRowModel().rows.map(row => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map(cell => (
-                <td key={cell.id} className="p-2 border-b">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
+        <tbody {...getTableBodyProps()}>
+          {rows.map(row => {
+            prepareRow(row);
+            return (
+              <tr {...row.getRowProps()} key={row.id}>
+                {row.cells.map(cell => {
+                  return (
+                    <td {...cell.getCellProps()} key={cell.column.id} className="p-2 border-b">
+                      {cell.render('Cell')}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
