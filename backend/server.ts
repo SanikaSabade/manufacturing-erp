@@ -17,10 +17,10 @@ app.use(express.json());
 app.use('/api', authMiddleware);
 
 // Route imports must use `.ts` extension if using ES modules, or CommonJS-style imports with allowJs
-import materialRoutes from './routes/materialRoutes';
-import inventoryLogRoutes from './routes/inventoryLogRoutes';
-import userRoutes from './routes/userRoutes';
-import activityLogRoutes from './routes/activityLogRoutes';
+import materialRoutes from './routes/Inventory/materialRoutes';
+import inventoryLogRoutes from './routes/Inventory/inventoryLogRoutes';
+import userRoutes from './routes/Admin&Miscellaneous/userRoutes';
+import activityLogRoutes from './routes/Admin&Miscellaneous/activityLogRoutes';
 
 app.use('/api/materials', materialRoutes);
 app.use('/api/inventory-logs', inventoryLogRoutes);

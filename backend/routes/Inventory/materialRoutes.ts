@@ -1,5 +1,5 @@
 import express from 'express';
-import Material from '../models/Material';
+import Material from '../../models/Inventory/Material';
 
 const router = express.Router();
 

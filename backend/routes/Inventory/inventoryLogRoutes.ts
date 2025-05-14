@@ -1,5 +1,5 @@
 import express from 'express';
-import InventoryLog from '../models/InventoryLog';
+import InventoryLog from '../../models/Inventory/InventoryLog';
 
 const router = express.Router();
 
