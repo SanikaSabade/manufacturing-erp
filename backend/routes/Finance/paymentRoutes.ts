@@ -7,14 +7,18 @@ router.post('/', async (req, res) => {
   try {
     const payment = await Payment.create(req.body);
     res.status(201).json(payment);
-  } catch (error) {
-    res.status(400).json({ error });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
   }
 });
 
 router.get('/', async (_req, res) => {
-  const payments = await Payment.find();
-  res.json(payments);
+  try {
+    const payments = await Payment.find().sort({ date: -1 });
+    res.json(payments);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 export default router;
