@@ -28,7 +28,7 @@ const Login: React.FC = () => {
           To the Manufacturing ERP
         </p>
         <img
-          src="/src/assets/erp.png" 
+          src="/erp.png" 
           alt="Illustration"
           className="w-3/4 rounded-2xl"
         />
