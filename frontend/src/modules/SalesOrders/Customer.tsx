@@ -13,7 +13,7 @@ const Customers: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Customer[]>("http://localhost:8000/api/customers")
+      .get<Customer[]>(`${import.meta.env.VITE_BACKEND_URL}api/customers`)
       .then((res) => setCustomers(res.data))
       .catch((err) => console.error("Error fetching customers:", err));
   }, []);

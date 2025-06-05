@@ -20,7 +20,7 @@ const ActivityLogs: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<ActivityLog[]>("http://localhost:8000/api/activity-logs")
+      .get<ActivityLog[]>(`${import.meta.env.VITE_BACKEND_URL}api/activity-logs`)
       .then((res) => setLogs(res.data))
       .catch((err) => console.error("Failed to fetch activity logs:", err))
       .finally(() => setLoading(false));

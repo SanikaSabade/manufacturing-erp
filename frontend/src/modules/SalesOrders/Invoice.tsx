@@ -22,7 +22,7 @@ const Invoices: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Invoice[]>("http://localhost:8000/api/invoices") 
+      .get<Invoice[]>(`${import.meta.env.VITE_BACKEND_URL}api/invoices`) 
       .then((res) => setInvoices(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));

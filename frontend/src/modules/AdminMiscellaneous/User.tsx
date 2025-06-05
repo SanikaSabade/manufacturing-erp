@@ -18,7 +18,7 @@ const Users: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<User[]>("http://localhost:8000/api/users") 
+      .get<User[]>(`${import.meta.env.VITE_BACKEND_URL}api/users`) 
       .then((res) => setUsers(res.data))
       .catch((err) => console.error("Failed to fetch users:", err))
       .finally(() => setLoading(false));

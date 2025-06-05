@@ -31,7 +31,7 @@ const GRNComponent: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<GRN[]>("http://localhost:8000/api/grns") 
+      .get<GRN[]>(`${import.meta.env.VITE_BACKEND_URL}api/grns`) 
       .then((res) => setGrns(res.data))
       .catch((err) => console.error("Error fetching GRNs:", err))
       .finally(() => setLoading(false));

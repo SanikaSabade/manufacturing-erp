@@ -23,7 +23,7 @@ const Attendance: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Attendance[]>("http://localhost:8000/api/attendance") 
+      .get<Attendance[]>(`${import.meta.env.VITE_BACKEND_URL}api/attendance`) 
       .then((res) => setRecords(res.data))
       .catch((err) => console.error("Error fetching attendance records:", err))
       .finally(() => setLoading(false));

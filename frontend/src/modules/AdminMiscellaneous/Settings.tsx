@@ -15,7 +15,7 @@ const SettingsPage: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Settings>("http://localhost:8000/api/settings") 
+      .get<Settings>(`${import.meta.env.VITE_BACKEND_URL}api/settings`) 
       .then((res) => setSettings(res.data))
       .catch((err) => console.error("Failed to fetch settings:", err))
       .finally(() => setLoading(false));

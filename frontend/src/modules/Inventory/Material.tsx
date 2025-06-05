@@ -19,7 +19,7 @@ const Materials: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Material[]>("http://localhost:8000/api/materials")
+      .get<Material[]>(`${import.meta.env.VITE_BACKEND_URL}api/materials`)
       .then((res) => setMaterials(res.data))
       .catch((err) => console.error("Failed to fetch materials:", err))
       .finally(() => setLoading(false));

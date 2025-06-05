@@ -25,7 +25,7 @@ const InventoryLogs: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<InventoryLog[]>("http://localhost:8000/api/inventory-logs") 
+      .get<InventoryLog[]>(`${import.meta.env.VITE_BACKEND_URL}api/inventory-logs`) 
       .then((res) => setLogs(res.data))
       .catch((err) => console.error("Error fetching inventory logs:", err))
       .finally(() => setLoading(false));

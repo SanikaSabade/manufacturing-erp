@@ -16,7 +16,7 @@ const Suppliers: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Supplier[]>("http://localhost:8000/api/suppliers") 
+      .get<Supplier[]>(`${import.meta.env.VITE_BACKEND_URL}api/suppliers`) 
       .then((res) => setSuppliers(res.data))
       .catch((err) => console.error("Error fetching suppliers:", err))
       .finally(() => setLoading(false));

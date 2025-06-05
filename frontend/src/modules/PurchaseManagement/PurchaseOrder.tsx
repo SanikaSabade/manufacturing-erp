@@ -30,7 +30,7 @@ const PurchaseOrders: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<PurchaseOrder[]>("http://localhost:8000/api/purchase-orders") 
+      .get<PurchaseOrder[]>(`${import.meta.env.VITE_BACKEND_URL}api/purchase-orders`) 
       .then((res) => setOrders(res.data))
       .catch((err) => console.error("Error fetching purchase orders:", err))
       .finally(() => setLoading(false));

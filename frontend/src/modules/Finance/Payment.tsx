@@ -18,7 +18,7 @@ const Payments: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Payment[]>("http://localhost:8000/api/payments") 
+      .get<Payment[]>(`${import.meta.env.VITE_BACKEND_URL}api/payments`) 
       .then((res) => setPayments(res.data))
       .catch((err) => console.error("Error fetching payments:", err))
       .finally(() => setLoading(false));

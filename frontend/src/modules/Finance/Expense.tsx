@@ -17,7 +17,7 @@ const Expenses: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Expense[]>("http://localhost:8000/api/expenses") 
+      .get<Expense[]>(`${import.meta.env.VITE_BACKEND_URL}api/expenses`) 
       .then((res) => setExpenses(res.data))
       .catch((err) => console.error("Failed to fetch expenses:", err))
       .finally(() => setLoading(false));

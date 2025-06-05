@@ -19,7 +19,7 @@ const Employees: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<Employee[]>("http://localhost:8000/api/employees") 
+      .get<Employee[]>(`${import.meta.env.VITE_BACKEND_URL}api/employees`) 
       .then((res) => setEmployees(res.data))
       .catch((err) => console.error("Error fetching employees:", err))
       .finally(() => setLoading(false));

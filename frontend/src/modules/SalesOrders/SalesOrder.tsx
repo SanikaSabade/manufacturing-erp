@@ -23,8 +23,8 @@ const SalesOrders: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get<SalesOrder[]>("http://localhost:8000/api/sales-orders") 
-      .then((res) => setOrders(res.data))
+    .get<SalesOrder[]>(`${import.meta.env.VITE_BACKEND_URL}api/sales-orders`) 
+    .then((res) => setOrders(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
