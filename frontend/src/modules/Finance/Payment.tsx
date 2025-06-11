@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from '../../utils/axios';
+import { useNavigate } from "react-router-dom";
 
 interface Payment {
   _id: string;
@@ -15,6 +16,7 @@ interface Payment {
 const Payments: React.FC = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -56,6 +58,14 @@ const Payments: React.FC = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-end p-5">
+        <button
+          onClick={() => navigate("/dashboard/finance/expenses")}
+          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+        >
+          Expenses
+        </button>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from '../../utils/axios';
+import { useNavigate } from "react-router-dom";
 
 interface Employee {
   _id: string;
@@ -16,6 +17,7 @@ interface Employee {
 const Employees: React.FC = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -29,7 +31,15 @@ const Employees: React.FC = () => {
 
   return (
     <div className="p-6">
+      <div className="mb-4 flex justify-between items-center">
       <h2 className="text-2xl font-bold mb-4">Employees</h2>
+      <button
+          onClick={() => navigate("/dashboard/hr/attendance")} 
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Attendance
+        </button>
+        </div>
       <div className="overflow-x-auto shadow rounded">
         <table className="min-w-full text-sm text-left border border-gray-200">
           <thead className="bg-gray-100 text-gray-700">

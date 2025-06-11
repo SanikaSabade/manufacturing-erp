@@ -16,6 +16,13 @@ import Settings from "../modules/AdminMiscellaneous/Settings";
 import ActivityLogs from "../modules/AdminMiscellaneous/ActivityLog";
 import InventoryLogs from "../modules/Inventory/InventoryLog";
 import Materials from "../modules/Inventory/Material";
+import SalesOrderForm from "../pages/SalesOrderForm";
+import CustomerForm from "../pages/CustomerForm";
+import InvoiceForm from "../pages/InvoiceForm";
+import PurchaseOrderForm from "../pages/PurchaseOrderForm";
+import SupplierForm from "../pages/SupplierForm";
+import GRNForm from "../pages/GRNForm";
+
 
 
 export const router = createBrowserRouter([
@@ -39,6 +46,19 @@ export const router = createBrowserRouter([
       { path: "admin/activity-log", element: <ActivityLogs /> },
       { path: "inventory", element: <InventoryLogs /> },
       { path: "inventory/material", element: <Materials/> },
+      { path: "sales/add", element: <SalesOrderForm /> },
+      {path:"customers/add" ,element:<CustomerForm /> },
+      {path:"invoices/add" ,element:<InvoiceForm /> },
+      {path:"purchase/add" ,element:<PurchaseOrderForm/> },
+      {path:"supplier/add" ,element:<SupplierForm/> },
+      {path:"grn/add" ,element:<GRNForm/> },
+
+
+
+
+
+
+
 
 
     ],

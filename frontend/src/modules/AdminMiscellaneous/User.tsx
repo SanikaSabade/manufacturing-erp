@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from '../../utils/axios';
+import { useNavigate } from "react-router-dom";
 
 interface User {
   _id: string;
@@ -15,6 +16,7 @@ interface User {
 const Users: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate=useNavigate();
 
   useEffect(() => {
     axios
@@ -28,7 +30,15 @@ const Users: React.FC = () => {
 
   return (
     <div className="p-6">
+                  <div className="mb-4 flex justify-between items-center">
       <h2 className="text-2xl font-bold mb-4">Users</h2>
+      <button
+          onClick={() => navigate("/dashboard/admin/activity-log")} 
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Activity-Log
+        </button>
+        </div>
       <div className="overflow-x-auto shadow rounded border border-gray-200">
         <table className="min-w-full divide-y divide-gray-200 text-sm text-left">
           <thead className="bg-gray-100 text-gray-700">
@@ -60,6 +70,14 @@ const Users: React.FC = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-center p-5">
+        <button
+          onClick={() => navigate("/dashboard/admin/settings")}
+          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+        >
+          Settings
+        </button>
       </div>
     </div>
   );

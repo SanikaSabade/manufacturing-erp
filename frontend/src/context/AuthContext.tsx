@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import  { setupInterceptors } from "../utils/axios";
 
 type User = {
   name: string;
@@ -54,6 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
+      setupInterceptors (logout);
     } catch (err: any) {
       setError(err.message);
       setUser(null);

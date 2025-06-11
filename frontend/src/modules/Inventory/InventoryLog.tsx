@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from '../../utils/axios';
+import { useNavigate } from "react-router-dom";
 
 interface Material {
   material_name: string;
@@ -22,7 +23,7 @@ interface InventoryLog {
 const InventoryLogs: React.FC = () => {
   const [logs, setLogs] = useState<InventoryLog[]>([]);
   const [loading, setLoading] = useState(true);
-
+const navigate=useNavigate();
   useEffect(() => {
     axios
       .get<InventoryLog[]>(`${import.meta.env.VITE_BACKEND_URL}api/inventory-logs`) 
@@ -61,6 +62,14 @@ const InventoryLogs: React.FC = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={() => navigate("/dashboard/inventory/material")}
+          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+        >
+          Materials
+        </button>
       </div>
     </div>
   );
