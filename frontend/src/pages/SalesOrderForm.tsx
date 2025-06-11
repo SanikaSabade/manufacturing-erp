@@ -152,10 +152,18 @@ const SalesOrderForm: React.FC = () => {
         >
           + Add Item
         </button>
-
+<div className="flex gap-2 justify-center">
         <button type="submit" className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
           Submit Order
         </button>
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard/sales")}
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+          >
+          Cancel
+        </button>
+        </div>
       </form>
     </div>
   );

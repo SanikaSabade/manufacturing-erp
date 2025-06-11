@@ -22,6 +22,11 @@ import InvoiceForm from "../pages/InvoiceForm";
 import PurchaseOrderForm from "../pages/PurchaseOrderForm";
 import SupplierForm from "../pages/SupplierForm";
 import GRNForm from "../pages/GRNForm";
+import EmployeeForm from "../pages/EmployeeForm";
+import AttendanceForm from "../pages/AttendanceForm";
+import PaymentForm from "../pages/PaymentForm";
+import ExpenseForm from "../pages/ExpenseForm";
+import InventoryForm from "../pages/InventoryForm";
 
 
 
@@ -52,10 +57,11 @@ export const router = createBrowserRouter([
       {path:"purchase/add" ,element:<PurchaseOrderForm/> },
       {path:"supplier/add" ,element:<SupplierForm/> },
       {path:"grn/add" ,element:<GRNForm/> },
-
-
-
-
+      {path:"employee/add" ,element:<EmployeeForm/> },
+      {path:"attendance/add" ,element:<AttendanceForm/> },
+      {path:"finance/add" ,element:<PaymentForm/> },
+      {path:"expenses/add" ,element:<ExpenseForm/> },
+      {path:"inventory/add" ,element:<InventoryForm/> },
 
 
 

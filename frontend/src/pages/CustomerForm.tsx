@@ -92,11 +92,11 @@ const CustomerForm: React.FC = () => {
           required
           className="p-2 border rounded"
         />
-        <div className="col-span-2 flex gap-2">
+        <div className="col-span-2 flex gap-2 justify-center">
           <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
             {id ? "Update" : "Add"}
           </button>
-          <button type="button" onClick={() => navigate("/dashboard/customers")} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+          <button type="button" onClick={() => navigate("/dashboard/sales/customers")} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
             Cancel
           </button>
         </div>

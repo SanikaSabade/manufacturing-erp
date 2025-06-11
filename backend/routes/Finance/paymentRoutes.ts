@@ -21,4 +21,35 @@ router.get('/', async (_req, res) => {
   }
 });
 
+router.put('/:id', async (req, res) => {
+  try {
+    const updatedPayment = await Payment.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedPayment) {
+      return res.status(404).json({ error: 'Payment not found' });
+    }
+
+    res.json(updatedPayment);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedPayment = await Payment.findByIdAndDelete(req.params.id);
+
+    if (!deletedPayment) {
+      return res.status(404).json({ error: 'Payment not found' });
+    }
+
+    res.json({ message: 'Payment deleted successfully' });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;

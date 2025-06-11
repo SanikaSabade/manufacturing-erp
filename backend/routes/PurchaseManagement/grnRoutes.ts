@@ -24,6 +24,35 @@ router.get('/', async (_req, res) => {
   }
 });
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const deleted = await GRN.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'GRN not found' });
+    }
+    res.status(200).json({ message: 'GRN deleted successfully' });
+  } catch (error: any) {
+    console.error("GRN DELETE error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  try {
+    const updated = await GRN.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!updated) {
+      return res.status(404).json({ error: 'GRN not found' });
+    }
+    res.status(200).json(updated);
+  } catch (error: any) {
+    console.error("GRN PUT error:", error.message);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 
 
 export default router;

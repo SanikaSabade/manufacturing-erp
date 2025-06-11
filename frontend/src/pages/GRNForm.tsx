@@ -15,6 +15,7 @@ interface ReceivedItem {
   material: string;
   quantity: number;
   inspected: boolean;
+  notInspected:boolean;
 }
 
 const GRNForm: React.FC = () => {
@@ -57,7 +58,7 @@ const GRNForm: React.FC = () => {
   const addItem = () => {
     setForm((prev) => ({
       ...prev,
-      receivedItems: [...prev.receivedItems, { material: "", quantity: 0, inspected: false }],
+      receivedItems: [...prev.receivedItems, { material: "", quantity: 0, inspected: false ,notInspected:false}],
     }));
   };
 
@@ -126,7 +127,8 @@ const GRNForm: React.FC = () => {
                 onChange={(e) => handleItemChange(index, "quantity", parseInt(e.target.value))}
                 className="p-2 border rounded"
               />
-              <label className="flex items-center gap-2">
+              <div>
+              <label className=" flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={item.inspected}
@@ -134,6 +136,15 @@ const GRNForm: React.FC = () => {
                 />
                 Inspected
               </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={item.notInspected}
+                  onChange={(e) => handleItemChange(index, "notInspected", e.target.checked)}
+                />
+                Not Inspected
+              </label>
+              </div>
             </div>
           ))}
           <button
@@ -144,13 +155,22 @@ const GRNForm: React.FC = () => {
             + Add Item
           </button>
         </div>
-
+<div className="flex gap-2 justify-center">
         <button
           type="submit"
-          className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          className=" p-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
           {id ? "Update GRN" : "Create GRN"}
         </button>
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard/purchase/grn")}
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+          >
+          Cancel
+        </button>
+        </div>
+
       </form>
     </div>
   );

@@ -1,4 +1,3 @@
-// src/pages/PurchaseOrderForm.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
@@ -175,13 +174,22 @@ const PurchaseOrderForm: React.FC = () => {
             + Add Item
           </button>
         </div>
-
+<div className="flex gap-2 justify-center">
         <button
           type="submit"
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           Save Purchase Order
         </button>
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard/purchase")}
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+          >
+          Cancel
+        </button>
+        </div>
+
       </form>
     </div>
   );

@@ -1,9 +1,8 @@
-// src/pages/AddSupplierForm.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 
-const AddSupplierForm: React.FC = () => {
+const SupplierForm: React.FC = () => {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -39,15 +38,26 @@ const AddSupplierForm: React.FC = () => {
             />
           </div>
         ))}
+        <div className="flex gap-2 justify-center">
         <button
           type="submit"
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           Add Supplier
         </button>
+
+        <button
+  type="button"
+  onClick={() => navigate("/dashboard/purchase/suppliers")}
+  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+>
+  Cancel
+</button>
+</div>
+
       </form>
     </div>
   );
 };
 
-export default AddSupplierForm;
+export default SupplierForm;
