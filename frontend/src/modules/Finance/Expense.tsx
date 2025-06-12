@@ -155,7 +155,8 @@ const Expenses: React.FC = () => {
                 <td className="px-4 py-2 border">{new Date(expense.date).toLocaleDateString()}</td>
                 <td className="px-4 py-2 border">{expense.notes || "—"}</td>
                 <td className="px-4 py-2 border">{new Date(expense.createdAt).toLocaleString()}</td>
-                <td className="px-4 py-2 space-x-2">
+                <td className="flex gap-2 p-4">
+
                   <button
                     onClick={() => handleEditClick(expense)}
                     className="text-sm px-3 py-1 bg-yellow-500 text-white rounded"
