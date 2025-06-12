@@ -27,6 +27,9 @@ import AttendanceForm from "../pages/AttendanceForm";
 import PaymentForm from "../pages/PaymentForm";
 import ExpenseForm from "../pages/ExpenseForm";
 import InventoryForm from "../pages/InventoryForm";
+import MaterialForm from "../pages/MaterialForm";
+import SettingForm from "../pages/SettingForm";
+import UserForm from "../pages/UserFrom";
 
 
 
@@ -62,6 +65,9 @@ export const router = createBrowserRouter([
       {path:"finance/add" ,element:<PaymentForm/> },
       {path:"expenses/add" ,element:<ExpenseForm/> },
       {path:"inventory/add" ,element:<InventoryForm/> },
+      {path:"material/add" ,element:<MaterialForm/> },
+      {path:"setting/add" ,element:<SettingForm/> },
+      {path:"user/add" ,element:<UserForm/> },
 
 
 

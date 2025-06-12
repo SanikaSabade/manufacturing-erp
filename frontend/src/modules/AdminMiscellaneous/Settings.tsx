@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../utils/axios";
+import { useNavigate } from "react-router-dom";
 
 interface Settings {
   _id?: string;
@@ -20,6 +21,7 @@ const SettingsPage: React.FC = () => {
   });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchSettings();
@@ -62,30 +64,32 @@ const SettingsPage: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
+    if (confirm("Are you sure you want to delete this setting?")) {
     try {
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}api/settings/${id}`);
       fetchSettings();
     } catch (error) {
       console.error("Delete failed", error);
     }
+  }
   };
 
   if (loading) return <div className="p-6 text-gray-500">Loading settings...</div>;
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">System Settings</h2>
+           <div className="mb-4 flex justify-between items-center">
+        <h2 className="text-2xl font-bold">System Settings</h2>
+        <div className="flex gap-2">
+          <button
+            onClick={() => navigate("/dashboard/setting/add")}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            + Add Setting
+          </button>
+        </div>
+        </div>
 
-      <button
-        onClick={() => {
-          setForm({ currency: "", taxPercentage: 0, fiscalYearStart: "", fiscalYearEnd: "" });
-          setEditingId(null);
-          setShowForm(true);
-        }}
-        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        + Add New Setting
-      </button>
 
       {showForm && (
         <form onSubmit={handleSubmit} className="mb-6 bg-gray-100 p-4 rounded shadow">
@@ -124,12 +128,25 @@ const SettingsPage: React.FC = () => {
               required
             />
           </div>
+          <div className="mt-4 flex gap-2">
           <button
             type="submit"
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
           >
             {editingId ? "Update Setting" : "Add Setting"}
-          </button>
+            </button>
+            <button
+  type="button"
+  onClick={() => {
+    setShowForm(false);
+    setForm({ currency: "", taxPercentage: 0, fiscalYearStart: "", fiscalYearEnd: "" });
+    setEditingId(null);
+  }}
+  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+>
+  Cancel
+</button>
+        </div>
         </form>
       )}
 
@@ -137,25 +154,25 @@ const SettingsPage: React.FC = () => {
         <table className="min-w-full border border-gray-200 text-sm text-left">
           <thead className="bg-gray-100 text-gray-700">
             <tr>
-              <th className="px-4 py-2">Currency</th>
-              <th className="px-4 py-2">Tax (%)</th>
-              <th className="px-4 py-2">Fiscal Year Start</th>
-              <th className="px-4 py-2">Fiscal Year End</th>
-              <th className="px-4 py-2">Actions</th>
+              <th className="px-4 py-2 border">Currency</th>
+              <th className="px-4 py-2 border">Tax (%)</th>
+              <th className="px-4 py-2 border">Fiscal Year Start</th>
+              <th className="px-4 py-2 border">Fiscal Year End</th>
+              <th className="px-4 py-2 border">Actions</th>
             </tr>
           </thead>
           <tbody>
             {settings.map((setting) => (
               <tr key={setting._id} className="border-b hover:bg-gray-50">
-                <td className="px-4 py-2">{setting.currency}</td>
-                <td className="px-4 py-2">{setting.taxPercentage}</td>
-                <td className="px-4 py-2">
+                <td className="px-4 py-2 border">{setting.currency}</td>
+                <td className="px-4 py-2 border">{setting.taxPercentage}</td>
+                <td className="px-4 py-2 border">
                   {new Date(setting.fiscalYearStart).toLocaleDateString()}
                 </td>
-                <td className="px-4 py-2">
+                <td className="px-4 py-2 border">
                   {new Date(setting.fiscalYearEnd).toLocaleDateString()}
                 </td>
-                <td className="px-4 py-2 flex gap-2">
+                <td className="px-4 py-2 flex gap-2 border-r-1">
                   <button
                     onClick={() => handleEdit(setting)}
                     className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"

@@ -14,8 +14,8 @@ interface Material {
 
 interface Item {
   materialId: string;
-  quantity: number;
-  cost: number;
+  quantity: string;
+  cost: string;
 }
 
 interface PurchaseOrderInput {
@@ -32,7 +32,7 @@ const PurchaseOrderForm: React.FC = () => {
     supplierId: "",
     orderDate: "",
     status: "Ordered",
-    items: [{ materialId: "", quantity: 1, cost: 0 }],
+    items: [{ materialId: "", quantity:"" , cost: ""}],
   });
   const navigate = useNavigate();
 
@@ -45,7 +45,7 @@ const PurchaseOrderForm: React.FC = () => {
     e.preventDefault();
   
     const hasInvalidItems = form.items.some(
-      (item) => !item.materialId || item.quantity < 1 || item.cost < 0
+      (item) => !item.materialId || item.quantity  || item.cost 
     );
   
     if (!form.supplierId || !form.orderDate || hasInvalidItems) {
@@ -141,17 +141,19 @@ const PurchaseOrderForm: React.FC = () => {
               </select>
               <input
                 type="number"
+                placeholder="Qty"
                 className="w-20 border px-2 py-1"
                 value={item.quantity}
                 min={1}
-                onChange={(e) => handleItemChange(index, "quantity", +e.target.value)}
+                onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
               />
               <input
                 type="number"
+                placeholder="Cost"
                 className="w-24 border px-2 py-1"
                 value={item.cost}
                 min={0}
-                onChange={(e) => handleItemChange(index, "cost", +e.target.value)}
+                onChange={(e) => handleItemChange(index, "cost", e.target.value)}
               />
               <button
   type="button"
@@ -168,7 +170,7 @@ const PurchaseOrderForm: React.FC = () => {
           ))}
           <button
             type="button"
-            onClick={() => setForm({ ...form, items: [...form.items, { materialId: "", quantity: 1, cost: 0 }] })}
+            onClick={() => setForm({ ...form, items: [...form.items, { materialId: "", quantity: "", cost: ""}] })}
             className="text-sm text-blue-600 hover:underline"
           >
             + Add Item

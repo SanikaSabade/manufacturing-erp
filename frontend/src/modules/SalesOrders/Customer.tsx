@@ -69,7 +69,7 @@ const Customers: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this order?");
+    const confirmDelete = window.confirm("Are you sure you want to delete this Customer?");
     if (!confirmDelete) return;
 
     try {

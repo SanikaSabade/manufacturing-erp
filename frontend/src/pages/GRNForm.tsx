@@ -13,7 +13,7 @@ interface PurchaseOrder {
 
 interface ReceivedItem {
   material: string;
-  quantity: number;
+  quantity: string;
   inspected: boolean;
   notInspected:boolean;
 }
@@ -58,9 +58,17 @@ const GRNForm: React.FC = () => {
   const addItem = () => {
     setForm((prev) => ({
       ...prev,
-      receivedItems: [...prev.receivedItems, { material: "", quantity: 0, inspected: false ,notInspected:false}],
+      receivedItems: [...prev.receivedItems, { material: "", quantity: "", inspected: false ,notInspected:false}],
     }));
   };
+
+  
+const removeItem = (index: number) => {
+  const updatedItems = [...form.receivedItems];
+  updatedItems.splice(index, 1);
+  setForm((prev) => ({ ...prev, receivedItems: updatedItems }));
+};
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,6 +152,15 @@ const GRNForm: React.FC = () => {
                 />
                 Not Inspected
               </label>
+              </div>
+              <div>
+              <button
+    type="button"
+    onClick={() => removeItem(index)}
+    className="text-red-600 hover:underline"
+  >
+    Remove
+  </button>
               </div>
             </div>
           ))}
