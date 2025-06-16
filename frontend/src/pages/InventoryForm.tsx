@@ -55,7 +55,7 @@ const InventoryForm: React.FC = () => {
   return (
     <div className="p-6 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Add Inventory Log</h2>
-      <form onSubmit={handleSubmit} className="space-y-4 bg-gray-100 p-6 rounded shadow">
+      <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-6 rounded shadow">
         <select
           value={formData.material_id}
           onChange={(e) => setFormData({ ...formData, material_id: e.target.value })}

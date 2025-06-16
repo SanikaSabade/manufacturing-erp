@@ -85,7 +85,7 @@ const PurchaseOrderForm: React.FC = () => {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <h2 className="text-2xl font-semibold mb-4">Add Purchase Order</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit}        className="grid grid-cols-1 gap-4 bg-gray-50 p-6 rounded shadow">
         <div>
           <label className="block mb-1 font-medium">Supplier</label>
           <select

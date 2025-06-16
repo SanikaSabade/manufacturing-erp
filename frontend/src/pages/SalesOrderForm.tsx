@@ -61,7 +61,7 @@ const SalesOrderForm: React.FC = () => {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Add Sales Order</h2>
-      <form onSubmit={handleSubmit} className="grid gap-4 bg-gray-100 p-4 rounded shadow">
+      <form onSubmit={handleSubmit} className="grid gap-4 bg-gray-50 p-4 rounded shadow">
         <label className="font-medium">Select Customer</label>
         <select
           required

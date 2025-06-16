@@ -36,7 +36,7 @@ const ExpenseForm: React.FC = () => {
   return (
     <div className="max-w-xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4">Add Expense</h2>
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white p-4 rounded shadow">
+      <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-4 rounded shadow">
         <div>
           <label className="block font-medium mb-1">Amount (₹)</label>
           <input

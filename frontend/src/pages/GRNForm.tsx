@@ -83,7 +83,7 @@ const removeItem = (index: number) => {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">{id ? "Edit GRN" : "Add GRN"}</h2>
-      <form onSubmit={handleSubmit} className="space-y-4 bg-gray-100 p-4 rounded shadow">
+      <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-4 rounded shadow">
         <div>
           <label className="block font-semibold mb-1">Purchase Order</label>
           <select

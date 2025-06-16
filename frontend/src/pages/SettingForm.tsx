@@ -36,7 +36,7 @@ const SettingsForm: React.FC = () => {
   return (
     <div className="p-6 max-w-xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Add New Setting</h2>
-      <form onSubmit={handleSubmit} className="bg-gray-100 p-4 rounded shadow space-y-4">
+      <form onSubmit={handleSubmit} className="bg-gray-50 p-4 rounded shadow space-y-4">
         <input
           name="currency"
           value={form.currency}

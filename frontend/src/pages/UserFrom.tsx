@@ -35,7 +35,7 @@ const UserForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-white p-6 shadow-md rounded">
+    <div className="max-w-xl mx-auto mt-10 bg-gray-50 p-6 shadow-md rounded">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New User</h2>
 
       {error && <div className="mb-4 text-red-600">{error}</div>}

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../utils/axios";
-import { useNavigate } from "react-router-dom";
 
 interface Item {
   quantity: number;
@@ -30,7 +29,6 @@ const SalesOrders: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchOrders();
@@ -101,145 +99,288 @@ const SalesOrders: React.FC = () => {
     }
   };
 
-  if (loading) return <div className="p-6">Loading...</div>;
+  const getStatusBadge = (status: string) => {
+    const statusClasses = {
+      Pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
+      Confirmed: "bg-blue-100 text-blue-800 border-blue-200",
+      Shipped: "bg-purple-100 text-purple-800 border-purple-200",
+      Delivered: "bg-green-100 text-green-800 border-green-200",
+    };
+
+    return (
+      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusClasses[status as keyof typeof statusClasses]}`}>
+        {status}
+      </span>
+    );
+  };
+
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-64">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+  );
 
   return (
-    <div className="p-6">
-      <div className="mb-4 flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Sales Orders</h2>
-        <div className="flex gap-2">
-        <button
-onClick={() => navigate("/dashboard/sales/add")}
-className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
->
-+ Add Order
-</button>
-          
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Sales Orders</h1>
+            </div>
+            
+          </div>
+        </div>
+
+        {/* Form */}
+        {showForm && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">
+                {editingId ? "Edit Order" : "Create New Order"}
+              </h3>
+            </div>
+            <form onSubmit={handleSubmit} className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Order Number
+                  </label>
+                  <input
+                    name="orderNumber"
+                    value={form.orderNumber}
+                    onChange={handleInputChange}
+                    placeholder="Enter order number"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Customer Name
+                  </label>
+                  <input
+                    name="customer"
+                    value={form.customer.name}
+                    onChange={handleInputChange}
+                    placeholder="Enter customer name"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Order Date
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={form.date}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Status
+                  </label>
+                  <select
+                    name="status"
+                    value={form.status}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    required
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-3 mt-8">
+                <button
+                  type="submit"
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                >
+                  {editingId ? "Update Order" : "Create Order"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetForm();
+                    setShowForm(false);
+                  }}
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <div className="flex items-center">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Orders</p>
+                <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <div className="flex items-center">
+              <div className="p-2 bg-yellow-100 rounded-lg">
+                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Pending</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {orders.filter(order => order.status === 'Pending').length}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <div className="flex items-center">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Shipped</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {orders.filter(order => order.status === 'Shipped').length}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <div className="flex items-center">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Delivered</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {orders.filter(order => order.status === 'Delivered').length}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">Orders List</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Order Number
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Customer
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Items
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Total
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {orders.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-12 text-center">
+                      <div className="flex flex-col items-center">
+                        <svg className="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  orders.map((order) => (
+                    <tr key={order._id} className="hover:bg-gray-50 transition-colors duration-200">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{order.orderNumber}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{order.customer?.name || "N/A"}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {new Date(order.date).toLocaleDateString()}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {getStatusBadge(order.status)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {order.items.length} {order.items.length === 1 ? 'item' : 'items'}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">
+                          ₹{calculateTotal(order.items)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleEdit(order)}
+                            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 transition-colors duration-200"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(order._id!)}
+                            className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-
-      {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="mb-6 bg-gray-100 p-4 rounded shadow grid grid-cols-2 gap-4"
-        >
-          <input
-            name="orderNumber"
-            value={form.orderNumber}
-            onChange={handleInputChange}
-            placeholder="Order Number"
-            className="p-2 border rounded"
-            required
-          />
-          <input
-            name="customer"
-            value={form.customer.name}
-            onChange={handleInputChange}
-            placeholder="Customer Name"
-            className="p-2 border rounded"
-            required
-          />
-          <input
-            type="date"
-            name="date"
-            value={form.date}
-            onChange={handleInputChange}
-            className="p-2 border rounded"
-            required
-          />
-          <select
-            name="status"
-            value={form.status}
-            onChange={handleInputChange}
-            className="p-2 border rounded"
-            required
-          >
-            <option value="Pending">Pending</option>
-            <option value="Confirmed">Confirmed</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Delivered">Delivered</option>
-          </select>
-          <div className="col-span-2 flex gap-2">
-            <button
-              type="submit"
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              {editingId ? "Update Order" : "Add Order"}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                resetForm();
-                setShowForm(false);
-              }}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      )}
-
-      <div className="overflow-x-auto rounded shadow">
-        <table className="min-w-full border text-left text-sm">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-2 border">Order Number</th>
-              <th className="px-4 py-2 border">Customer</th>
-              <th className="px-4 py-2 border">Date</th>
-              <th className="px-4 py-2 border">Status</th>
-              <th className="px-4 py-2 border">Total Items</th>
-              <th className="px-4 py-2 border">Total Price</th>
-              <th className="px-4 py-2 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order._id} className="hover:bg-gray-50 border-b">
-                <td className="px-4 py-2 border">{order.orderNumber}</td>
-                <td className="px-4 py-2 border">{order.customer?.name || "N/A"}</td>
-                <td className="px-4 py-2 border">
-                  {new Date(order.date).toLocaleDateString()}
-                </td>
-                <td className="px-4 py-2 border capitalize">{order.status}</td>
-                <td className="px-4 py-2 border">{order.items.length}</td>
-                <td className="px-4 py-2 border">₹{calculateTotal(order.items)}</td>
-                <td className="px-4 py-2 border">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEdit(order)}
-                      className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(order._id!)}
-                      className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex justify-center mt-6">
-
-      <button
-            onClick={() => navigate("/dashboard/sales/customers")}
-            className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-            >
-            Customers List
-          </button>
-          </div>
     </div>
   );
 };
 
 export default SalesOrders;
-
-
-
-

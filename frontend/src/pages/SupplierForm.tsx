@@ -26,7 +26,7 @@ const SupplierForm: React.FC = () => {
   return (
     <div className="p-6 max-w-2xl mx-auto">
       <h2 className="text-2xl font-semibold mb-4">Add New Supplier</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit}         className="grid grid-cols-1 gap-4 bg-gray-50 p-6 rounded shadow" >
         {["name", "email", "phone", "address", "gstNumber"].map((field) => (
           <div key={field}>
             <label className="block mb-1 font-medium capitalize">{field}</label>

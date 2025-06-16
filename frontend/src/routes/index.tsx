@@ -30,6 +30,7 @@ import InventoryForm from "../pages/InventoryForm";
 import MaterialForm from "../pages/MaterialForm";
 import SettingForm from "../pages/SettingForm";
 import UserForm from "../pages/UserFrom";
+import DashboardHome from "../components/Dashboardhome"; 
 
 
 
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
     path: "/dashboard",
     element: <DashboardLayout />,
     children: [
+        { index: true, element: <DashboardHome /> },
       { path: "sales", element: <SalesOrders /> },
       { path: "sales/customers", element: <Customers /> },
       { path: "sales/invoices", element: <Invoices /> },

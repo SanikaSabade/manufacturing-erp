@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from '../../utils/axios';
+import axios from "../../utils/axios";
 
 interface User {
   _id: string;
@@ -8,7 +8,7 @@ interface User {
 
 interface ActivityLog {
   _id: string;
-  user_id: User | null; 
+  user_id: User | null;
   activity: string;
   timestamp: string;
   ip_address: string;
@@ -26,32 +26,77 @@ const ActivityLogs: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-6 text-gray-500">Loading activity logs...</div>;
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-64">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+  );
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Activity Logs</h2>
-      <div className="overflow-x-auto shadow rounded border border-gray-200">
-        <table className="min-w-full divide-y divide-gray-200 text-sm text-left">
-          <thead className="bg-gray-100 text-gray-700">
-            <tr>
-              <th className="px-4 py-2">User</th>
-              <th className="px-4 py-2">Activity</th>
-              <th className="px-4 py-2">Timestamp</th>
-              <th className="px-4 py-2">IP Address</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {logs.map((log) => (
-              <tr key={log._id} className="hover:bg-gray-50">
-                <td className="px-4 py-2">{log.user_id?.name || "Unknown User"}</td>
-                <td className="px-4 py-2">{log.activity}</td>
-                <td className="px-4 py-2">{new Date(log.timestamp).toLocaleString()}</td>
-                <td className="px-4 py-2">{log.ip_address}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="p-6 bg-gray-50 min-h-screen font-inter">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Activity Logs</h1>
+              <p className="text-gray-600 mt-1">View system activity logs</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">Activity Logs List</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-[120px]">User</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-[300px]">Activity</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-[120px]">IP Address</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {logs.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="px-3 py-12 text-center">
+                      <div className="flex flex-col items-center">
+                        <svg className="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No activity logs found</h3>
+                        <p className="text-gray-500">No activity records available at the moment.</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  logs.map((log) => (
+                    <tr key={log._id} className="hover:bg-gray-50 transition-colors duration-200">
+                      <td className="px-3 py-2 max-w-[120px] whitespace-normal break-words">
+                        <div className="text-sm text-gray-900 truncate">{log.user_id?.name || "Unknown User"}</div>
+                      </td>
+                      <td className="px-3 py-2 max-w-[300px] whitespace-normal break-words">
+                        <div className="text-sm text-gray-900 truncate">{log.activity}</div>
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {new Date(log.timestamp).toLocaleString()}
+                        </div>
+                      </td>
+                      <td className="px-3 py-2 max-w-[120px] whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{log.ip_address}</div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -33,7 +33,7 @@ const EmployeeForm: React.FC = () => {
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Add New Employee</h2>
-      <div className="grid grid-cols-2 gap-4">
+      <div  className="grid grid-cols-1 gap-4 bg-gray-50 p-6 rounded shadow">
         <input name="name" placeholder="Name" className="border rounded px-3 py-2" value={formData.name} onChange={handleChange} />
         <input name="email" placeholder="Email" className="border rounded px-3 py-2" value={formData.email} onChange={handleChange} />
         <input name="phone" placeholder="Phone" className="border rounded px-3 py-2" value={formData.phone} onChange={handleChange} />

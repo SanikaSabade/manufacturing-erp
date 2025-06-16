@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from '../../utils/axios';
-import { useNavigate } from "react-router-dom";
+import axios from "../../utils/axios";
 
 interface Material {
   _id: string;
@@ -19,7 +18,6 @@ const Materials: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [editMaterial, setEditMaterial] = useState<Material | null>(null);
   const [updating, setUpdating] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchMaterials();
@@ -75,144 +73,233 @@ const Materials: React.FC = () => {
     }
   };
 
-  if (loading) return <div className="p-6">Loading materials...</div>;
+  const getCategoryBadge = (category: string) => {
+    const categoryClasses = {
+      Raw: "bg-blue-100 text-blue-800 border-blue-200",
+      "Semi-finished": "bg-yellow-100 text-yellow-800 border-yellow-200",
+      Finished: "bg-green-100 text-green-800 border-green-200",
+    };
+
+    return (
+      <span
+        className={`px-1.5 py-0.5 rounded-full text-xs font-medium border ${
+          categoryClasses[category as keyof typeof categoryClasses]
+        }`}
+      >
+        {category}
+      </span>
+    );
+  };
+
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-64">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+  );
 
   return (
-    <div className="p-6">
-      <div className="mb-4 flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Materials</h2>
-        <button
-          onClick={() => navigate("/dashboard/material/add")}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          + Add Material
-        </button>
-      </div>
-
-      {editMaterial && (
-        <div className="mb-6 p-4 border rounded shadow bg-white grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="material_name"
-            value={editMaterial.material_name}
-            onChange={handleEditChange}
-            className="border p-2 rounded"
-            placeholder="Material Name"
-          />
-          <input
-            type="text"
-            name="material_code"
-            value={editMaterial.material_code}
-            onChange={handleEditChange}
-            className="border p-2 rounded"
-            placeholder="Material Code"
-          />
-          <select
-            name="category"
-            value={editMaterial.category}
-            onChange={handleEditChange}
-            className="border p-2 rounded"
-          >
-            <option value="Raw">Raw</option>
-            <option value="Semi-finished">Semi-finished</option>
-            <option value="Finished">Finished</option>
-          </select>
-          <input
-            type="text"
-            name="unit"
-            value={editMaterial.unit}
-            onChange={handleEditChange}
-            className="border p-2 rounded"
-            placeholder="Unit"
-          />
-          <input
-            type="number"
-            name="quantity_available"
-            value={editMaterial.quantity_available}
-            onChange={handleEditChange}
-            className="border p-2 rounded"
-            placeholder="Quantity Available"
-          />
-          <input
-            type="number"
-            name="reorder_level"
-            value={editMaterial.reorder_level}
-            onChange={handleEditChange}
-            className="border p-2 rounded"
-            placeholder="Reorder Level"
-          />
-          <input
-            type="text"
-            name="location"
-            value={editMaterial.location}
-            onChange={handleEditChange}
-            className="border p-2 rounded"
-            placeholder="Location"
-          />
-          <div className="col-span-full flex gap-4 justify-start mt-2">
-            <button
-              onClick={handleUpdate}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-              disabled={updating}
-            >
-              {updating ? "Updating..." : "Update"}
-            </button>
-            <button
-              onClick={() => setEditMaterial(null)}
-              className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
-            >
-              Cancel
-            </button>
+    <div className="p-6 bg-gray-50 min-h-screen font-inter">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Materials</h1>
+            </div>
           </div>
         </div>
-      )}
 
-      <div className="overflow-x-auto rounded shadow">
-        <table className="min-w-full text-sm text-left border">
-          <thead className="bg-gray-100 border-b">
-            <tr>
-              <th className="px-4 py-2 border">Name</th>
-              <th className="px-4 py-2 border">Code</th>
-              <th className="px-4 py-2 border">Category</th>
-              <th className="px-4 py-2 border">Unit</th>
-              <th className="px-4 py-2 border">Available</th>
-              <th className="px-4 py-2 border">Reorder Level</th>
-              <th className="px-4 py-2 border">Location</th>
-              <th className="px-4 py-2 border">Created At</th>
-              <th className="px-4 py-2 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {materials.map((material) => (
-              <tr key={material._id} className="border-b hover:bg-gray-50">
-                <td className="px-4 py-2 border">{material.material_name}</td>
-                <td className="px-4 py-2 border">{material.material_code}</td>
-                <td className="px-4 py-2 border">{material.category}</td>
-                <td className="px-4 py-2 border">{material.unit}</td>
-                <td className="px-4 py-2 border">{material.quantity_available}</td>
-                <td className="px-4 py-2 border">{material.reorder_level}</td>
-                <td className="px-4 py-2 border">{material.location}</td>
-                <td className="px-4 py-2 border">{new Date(material.created_at).toLocaleDateString()}</td>
-                <td className="px-4 py-2 ">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEditClick(material)}
-                    className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                    >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(material._id)}
-                    className="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                    >
-                    Delete
-                  </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {/* Edit Form */}
+        {editMaterial && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Edit Material</h3>
+            </div>
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Material Name</label>
+                  <input
+                    type="text"
+                    name="material_name"
+                    value={editMaterial.material_name}
+                    onChange={handleEditChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    placeholder="Enter material name"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Material Code</label>
+                  <input
+                    type="text"
+                    name="material_code"
+                    value={editMaterial.material_code}
+                    onChange={handleEditChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    placeholder="Enter material code"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <select
+                    name="category"
+                    value={editMaterial.category}
+                    onChange={handleEditChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  >
+                    <option value="Raw">Raw</option>
+                    <option value="Semi-finished">Semi-finished</option>
+                    <option value="Finished">Finished</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Unit</label>
+                  <input
+                    type="text"
+                    name="unit"
+                    value={editMaterial.unit}
+                    onChange={handleEditChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    placeholder="Enter unit"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Quantity Available</label>
+                  <input
+                    type="number"
+                    name="quantity_available"
+                    value={editMaterial.quantity_available}
+                    onChange={handleEditChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    placeholder="Enter quantity available"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Reorder Level</label>
+                  <input
+                    type="number"
+                    name="reorder_level"
+                    value={editMaterial.reorder_level}
+                    onChange={handleEditChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    placeholder="Enter reorder level"
+                    required
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={editMaterial.location}
+                    onChange={handleEditChange}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    placeholder="Enter location"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleUpdate}
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                  disabled={updating}
+                >
+                  {updating ? "Updating..." : "Save Changes"}
+                </button>
+                <button
+                  onClick={() => setEditMaterial(null)}
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">Materials List</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-[110px]">Name</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-[100px]">Code</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reorder Level</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-[120px]">Location</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {materials.length === 0 ? (
+                  <tr>
+                    <td colSpan={9} className="px-3 py-12 text-center">
+                      <div className="flex flex-col items-center">
+                        <svg className="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No materials found</h3>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  materials.map((material) => (
+                    <tr key={material._id} className="hover:bg-gray-50 transition-colors duration-200">
+                      <td className="px-3 py-2 max-w-[110px] whitespace-normal break-words">
+                        <div className="text-sm text-gray-900 truncate">{material.material_name}</div>
+                      </td>
+                      <td className="px-3 py-2 max-w-[100px] whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{material.material_code}</div>
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">{getCategoryBadge(material.category)}</td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{material.unit}</div>
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{material.quantity_available}</div>
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{material.reorder_level}</div>
+                      </td>
+                      <td className="px-3 py-2 max-w-[120px] whitespace-normal break-words">
+                        <div className="text-sm text-gray-900 truncate">{material.location}</div>
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{new Date(material.created_at).toLocaleDateString()}</div>
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleEditClick(material)}
+                            className="inline-flex items-center px-1.5 py-0.5 border border-transparent text-xs font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 transition-colors duration-200"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(material._id)}
+                            className="inline-flex items-center px-1.5 py-0.5 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -55,7 +55,7 @@ const InvoiceForm: React.FC = () => {
       <h2 className="text-2xl font-bold mb-4">Add New Invoice</h2>
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-1 gap-4 bg-gray-100 p-6 rounded shadow"
+        className="grid grid-cols-1 gap-4 bg-gray-50 p-6 rounded shadow"
       >
         <input
           name="invoiceNumber"
