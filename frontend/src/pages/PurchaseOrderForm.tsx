@@ -14,8 +14,8 @@ interface Material {
 
 interface Item {
   materialId: string;
-  quantity: string;
-  cost: string;
+  quantity: number,
+  cost: number,
 }
 
 interface PurchaseOrderInput {
@@ -32,7 +32,7 @@ const PurchaseOrderForm: React.FC = () => {
     supplierId: "",
     orderDate: "",
     status: "Ordered",
-    items: [{ materialId: "", quantity:"" , cost: ""}],
+    items: [{ materialId: "", quantity:0 , cost: 0}],
   });
   const navigate = useNavigate();
 
@@ -45,7 +45,7 @@ const PurchaseOrderForm: React.FC = () => {
     e.preventDefault();
   
     const hasInvalidItems = form.items.some(
-      (item) => !item.materialId || item.quantity  || item.cost 
+      (item) => !item.materialId || !item.quantity  || !item.cost 
     );
   
     if (!form.supplierId || !form.orderDate || hasInvalidItems) {
@@ -140,21 +140,23 @@ const PurchaseOrderForm: React.FC = () => {
                 ))}
               </select>
               <input
-                type="number"
-                placeholder="Qty"
-                className="w-20 border px-2 py-1"
-                value={item.quantity}
-                min={1}
-                onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
-              />
-              <input
-                type="number"
-                placeholder="Cost"
-                className="w-24 border px-2 py-1"
-                value={item.cost}
-                min={0}
-                onChange={(e) => handleItemChange(index, "cost", e.target.value)}
-              />
+  type="number"
+  placeholder="Qty"
+  className="w-20 border px-2 py-1"
+  value={item.quantity}
+  min={1}
+  onChange={(e) => handleItemChange(index, "quantity", Number(e.target.value))}
+/>
+
+<input
+  type="number"
+  placeholder="Cost"
+  className="w-24 border px-2 py-1"
+  value={item.cost}
+  min={0}
+  onChange={(e) => handleItemChange(index, "cost", Number(e.target.value))}
+/>
+
               <button
   type="button"
   onClick={() => {
@@ -170,7 +172,7 @@ const PurchaseOrderForm: React.FC = () => {
           ))}
           <button
             type="button"
-            onClick={() => setForm({ ...form, items: [...form.items, { materialId: "", quantity: "", cost: ""}] })}
+            onClick={() => setForm({ ...form, items: [...form.items, { materialId: "", quantity: 0, cost: 0}] })}
             className="text-sm text-blue-600 hover:underline"
           >
             + Add Item

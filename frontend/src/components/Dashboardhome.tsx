@@ -1,46 +1,39 @@
 import React, { useEffect, useState } from "react";
-import {
-    PieChart,
-    Pie,
-    Cell,
-    Tooltip,
-    ResponsiveContainer,
-    Legend,
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-  } from "recharts";
-  
 import axios from "../utils/axios";
+import {
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid
+} from "recharts";
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff8042", "#00c49f"];
 
-interface Stats {
-  sales: number;
-  purchase: number;
-  hr: number;
-  finance: number;
-  inventory: number;
+interface Order {
+  orderNumber: string;
+  date: string;
+  status: string;
+  customer?: { name: string };
+  supplier?: { name: string };
 }
 
-interface ChartData {
-  name: string;
-  count: number;
-}
-
-interface PieChartData {
-  name: string;
-  value: number;
+interface DashboardStats {
+  salesTotal: number;
+  purchaseTotal: number;
+  profit: number;
+  lastSalesOrders: Order[];
+  lastPurchaseOrders: Order[];
+  topProducts: { name: string; totalSold: number }[];
+  topCategories: { category: string; totalSold: number }[];
+  activeEmployees: number;
+  receivedOrders: number;
+  pendingOrders: number;
 }
 
 const DashboardHome: React.FC = () => {
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get<Stats>("/api/dashboard/stats")
+    axios.get("/api/dashboard/stats")
       .then((res) => {
         setStats(res.data);
         setLoading(false);
@@ -52,44 +45,60 @@ const DashboardHome: React.FC = () => {
   }, []);
 
   if (loading || !stats) {
-    return <p className="text-gray-500">Loading stats...</p>;
+    return <div className="p-6 text-gray-500">Loading dashboard...</div>;
   }
 
-  const barData: ChartData[] = [
-    { name: "Sales", count: stats.sales },
-    { name: "Purchase", count: stats.purchase },
-    { name: "Finance", count: stats.finance },
-    { name: "Inventory", count: stats.inventory },
+  const financialData = [
+    { name: "Sales", value: stats.salesTotal },
+    { name: "Purchase", value: stats.purchaseTotal },
+    { name: "Profit", value: stats.profit }
   ];
 
-  const pieData: PieChartData[] = barData.map(({ name, count }) => ({
-    name,
-    value: count,
-  }));
-
   return (
-    <div className="space-y-8">
-      <div className="bg-gray-50 p-6 rounded-xl shadow-md">
-      <h2 className="flex justify-center text-3xl">Example Statistics</h2>
+    <div className="space-y-10 p-6">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-3 gap-4">
+        {financialData.map(({ name, value }) => (
+          <div key={name} className="bg-white shadow p-6 rounded-lg text-center">
+            <p className="text-lg font-semibold text-gray-600">{name}</p>
+            <p className="text-2xl font-bold text-indigo-600">₹{value.toFixed(2)}</p>
+          </div>
+        ))}
+        <div className="bg-white shadow p-6 rounded-lg text-center">
+          <p className="text-lg font-semibold text-gray-600">Active Employees</p>
+          <p className="text-2xl font-bold text-green-600">{stats.activeEmployees}</p>
+        </div>
+        <div className="bg-white shadow p-6 rounded-lg text-center">
+          <p className="text-lg font-semibold text-gray-600">Received Orders</p>
+          <p className="text-2xl font-bold text-blue-600">{stats.receivedOrders}</p>
+        </div>
+        <div className="bg-white shadow p-6 rounded-lg text-center">
+          <p className="text-lg font-semibold text-gray-600">Pending Orders</p>
+          <p className="text-2xl font-bold text-red-600">{stats.pendingOrders}</p>
+        </div>
+      </div>
 
-        <h2 className="text-xl font-bold text-gray-700 p-4">Menu Statistics Overview</h2>
+      {/* Top Products - Bar Chart */}
+      <div className="bg-white p-6 shadow rounded-lg">
+        <h3 className="text-xl font-bold text-gray-700 mb-4">Top 10 Products Sold</h3>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={barData}>
+          <BarChart data={stats.topProducts}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis allowDecimals={false} />
             <Tooltip />
-            <Bar dataKey="count" fill="#8884d8" />
+            <Bar dataKey="totalSold" fill="#8884d8" />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="bg-gray-50 p-6 rounded-xl shadow-md">
-        <h2 className="text-xl font-bold text-gray-700 mb-4">Menu Distribution</h2>
+      {/* Top Categories - Pie Chart */}
+      <div className="bg-white p-6 shadow rounded-lg">
+        <h3 className="text-xl font-bold text-gray-700 mb-4">Top 10 Categories Sold</h3>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
-              data={pieData}
+              data={stats.topCategories.map(c => ({ name: c.category, value: c.totalSold }))}
               dataKey="value"
               nameKey="name"
               cx="50%"
@@ -97,13 +106,61 @@ const DashboardHome: React.FC = () => {
               outerRadius={100}
               label
             >
-              {pieData.map((_entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              {stats.topCategories.map((_entry, index) => (
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
             <Legend />
           </PieChart>
         </ResponsiveContainer>
+      </div>
+
+      {/* Last 10 Sales Orders */}
+      <div className="bg-white p-6 shadow rounded-lg">
+        <h3 className="text-xl font-bold text-gray-700 mb-4">Last 10 Sales Orders</h3>
+        <table className="min-w-full text-sm text-left border">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="px-4 py-2 border">Order No.</th>
+              <th className="px-4 py-2 border">Customer</th>
+              <th className="px-4 py-2 border">Status</th>
+              <th className="px-4 py-2 border">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stats.lastSalesOrders.map((order, i) => (
+              <tr key={i} className="hover:bg-gray-50 border">
+                <td className="px-4 py-2 border">{order.orderNumber}</td>
+                <td className="px-4 py-2 border">{order.customer?.name || 'N/A'}</td>
+                <td className="px-4 py-2 border">{order.status}</td>
+                <td className="px-4 py-2 border">{new Date(order.date).toLocaleDateString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Last 10 Purchase Orders */}
+      <div className="bg-white p-6 shadow rounded-lg">
+        <h3 className="text-xl font-bold text-gray-700 mb-4">Last 10 Purchase Orders</h3>
+        <table className="min-w-full text-sm text-left border">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="px-4 py-2 border">Supplier</th>
+              <th className="px-4 py-2 border">Status</th>
+              <th className="px-4 py-2 border">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stats.lastPurchaseOrders.map((order, i) => (
+              <tr key={i} className="hover:bg-gray-50 border">
+                <td className="px-4 py-2 border">{order.supplier?.name || 'N/A'}</td>
+                <td className="px-4 py-2 border">{order.status}</td>
+                <td className="px-4 py-2 border">{new Date(order.date).toLocaleDateString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
