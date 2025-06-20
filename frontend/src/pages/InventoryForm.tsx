@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  MenuItem,
+  Stack,
+  FormControl,
+  InputLabel,
+  Select,
+  Paper,
+  type SelectChangeEvent,
+} from "@mui/material";
 
 interface Material {
   _id: string;
@@ -42,6 +55,16 @@ const InventoryForm: React.FC = () => {
     fetchData();
   }, []);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -51,95 +74,108 @@ const InventoryForm: React.FC = () => {
       console.error("Error adding inventory log:", error);
     }
   };
-
+  
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Add Inventory Log</h2>
-      <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-6 rounded shadow">
-        <select
-          value={formData.material_id}
-          onChange={(e) => setFormData({ ...formData, material_id: e.target.value })}
-          required
-          className="w-full border px-3 py-2 rounded"
-        >
-          <option value="">Select Material</option>
-          {materials.map((mat) => (
-            <option key={mat._id} value={mat._id}>
-              {mat.material_name}
-            </option>
-          ))}
-        </select>
+    <Box maxWidth={600} mx="auto" p={3}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Add Inventory Log
+      </Typography>
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 2, bgcolor: "#fafafa" }}>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={3}>
+            <FormControl fullWidth required>
+              <InputLabel>Material</InputLabel>
+              <Select
+                name="material_id"
+                value={formData.material_id}
+                onChange={handleSelectChange}
+                label="Material"
+              >
+                {materials.map((mat) => (
+                  <MenuItem key={mat._id} value={mat._id}>
+                    {mat.material_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-        <select
-          value={formData.change_type}
-          onChange={(e) => setFormData({ ...formData, change_type: e.target.value })}
-          required
-          className="w-full border px-3 py-2 rounded"
-        >
-          <option value="add">Add</option>
-          <option value="remove">Remove</option>
-          <option value="adjust">Adjust</option>
-          <option value="transfer">Transfer</option>
-        </select>
+            <FormControl fullWidth required>
+              <InputLabel>Change Type</InputLabel>
+              <Select
+                name="change_type"
+                value={formData.change_type}
+                onChange={handleSelectChange}
+                label="Change Type"
+              >
+                <MenuItem value="add">Add</MenuItem>
+                <MenuItem value="remove">Remove</MenuItem>
+                <MenuItem value="adjust">Adjust</MenuItem>
+                <MenuItem value="transfer">Transfer</MenuItem>
+              </Select>
+            </FormControl>
 
-        <input
-          type="number"
-          placeholder="Quantity Changed"
-          value={formData.quantity_changed}
-          onChange={(e) => setFormData({ ...formData, quantity_changed: e.target.value })}
-          required
-          className="w-full border px-3 py-2 rounded"
-        />
+            <TextField
+              label="Quantity Changed"
+              name="quantity_changed"
+              value={formData.quantity_changed}
+              onChange={handleInputChange}
+              required
+              fullWidth
+              type="number"
+            />
 
-        <input
-          type="text"
-          placeholder="Reason"
-          value={formData.reason}
-          onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-          required
-          className="w-full border px-3 py-2 rounded"
-        />
+            <TextField
+              label="Reason"
+              name="reason"
+              value={formData.reason}
+              onChange={handleInputChange}
+              required
+              fullWidth
+            />
 
-        <input
-          type="date"
-          value={formData.date}
-          onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-          required
-          className="w-full border px-3 py-2 rounded"
-        />
+            <TextField
+              label="Date"
+              name="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              required
+              fullWidth
+              type="date"
+              InputLabelProps={{ shrink: true }}
+            />
 
-        <select
-          value={formData.user_id}
-          onChange={(e) => setFormData({ ...formData, user_id: e.target.value })}
-          required
-          className="w-full border px-3 py-2 rounded"
-        >
-          <option value="">Select User</option>
-          {users.map((user) => (
-            <option key={user._id} value={user._id}>
-              {user.name}
-            </option>
-          ))}
-        </select>
+            <FormControl fullWidth required>
+              <InputLabel>User</InputLabel>
+              <Select
+                name="user_id"
+                value={formData.user_id}
+                onChange={handleSelectChange}
+                label="User"
+              >
+                {users.map((user) => (
+                  <MenuItem key={user._id} value={user._id}>
+                    {user.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-        <div className="flex gap-2 justify-center">
-          
-          <button
-            type="submit"
-            className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-          >
-            Add Log
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate("/dashboard/inventory")}
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
+            <Stack direction="row" justifyContent="center" spacing={2}>
+              <Button variant="contained" color="success" type="submit">
+                Add Log
+              </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={() => navigate("/dashboard/inventory")}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </Stack>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 

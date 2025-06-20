@@ -1,5 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "../utils/axios";
+import {
+  Box,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Button,
+  Stack,
+  Paper,
+  type SelectChangeEvent,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 interface SalesOrder {
@@ -33,11 +46,16 @@ const InvoiceForm: React.FC = () => {
       .catch(console.error);
   }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -51,82 +69,88 @@ const InvoiceForm: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Add New Invoice</h2>
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 gap-4 bg-gray-50 p-6 rounded shadow"
-      >
-        <input
-          name="invoiceNumber"
-          value={form.invoiceNumber}
-          onChange={handleChange}
-          placeholder="Invoice Number"
-          className="p-2 border rounded"
-          required
-        />
+    <Box maxWidth={600} mx="auto" p={3}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Add New Invoice
+      </Typography>
+      <Paper elevation={3} sx={{ p: 3, bgcolor: "#fafafa" }}>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={2}>
+            <TextField
+              name="invoiceNumber"
+              label="Invoice Number"
+              value={form.invoiceNumber}
+              onChange={handleInputChange}
+              required
+              fullWidth
+            />
 
-        <select
-          name="salesOrder"
-          value={form.salesOrder}
-          onChange={handleChange}
-          className="p-2 border rounded"
-          required
-        >
-          <option value="">Select Sales Order</option>
-          {salesOrders.map((order) => (
-            <option key={order._id} value={order._id}>
-              {order.orderNumber}
-            </option>
-          ))}
-        </select>
+            <FormControl fullWidth required>
+              <InputLabel>Select Sales Order</InputLabel>
+              <Select
+                name="salesOrder"
+                value={form.salesOrder}
+                onChange={handleSelectChange}
+                label="Select Sales Order"
+              >
+                <MenuItem value="">Select Sales Order</MenuItem>
+                {salesOrders.map((order) => (
+                  <MenuItem key={order._id} value={order._id}>
+                    {order.orderNumber}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-        <input
-          type="date"
-          name="issueDate"
-          value={form.issueDate}
-          onChange={handleChange}
-          className="p-2 border rounded"
-          required
-        />
+            <TextField
+              name="issueDate"
+              label="Issue Date"
+              type="date"
+              value={form.issueDate}
+              onChange={handleInputChange}
+              required
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
 
-        <select
-          name="paymentStatus"
-          value={form.paymentStatus}
-          onChange={handleChange}
-          className="p-2 border rounded"
-          required
-        >
-          <option value="Unpaid">Unpaid</option>
-          <option value="Paid">Paid</option>
-          <option value="Overdue">Overdue</option>
-        </select>
+            <FormControl fullWidth required>
+              <InputLabel>Payment Status</InputLabel>
+              <Select
+                name="paymentStatus"
+                value={form.paymentStatus}
+                onChange={handleSelectChange}
+                label="Payment Status"
+              >
+                <MenuItem value="Unpaid">Unpaid</MenuItem>
+                <MenuItem value="Paid">Paid</MenuItem>
+                <MenuItem value="Overdue">Overdue</MenuItem>
+              </Select>
+            </FormControl>
 
-        <input
-          name="pdfUrl"
-          value={form.pdfUrl}
-          onChange={handleChange}
-          placeholder="PDF URL (optional)"
-          className="p-2 border rounded"
-        />
+            <TextField
+              name="pdfUrl"
+              label="PDF URL (optional)"
+              value={form.pdfUrl}
+              onChange={handleInputChange}
+              fullWidth
+            />
 
-        <div className="flex gap-2 justify-center">
-          <button
-            type="submit"
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          >
-            Save Invoice
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate("/dashboard/sales/invoices")}
-            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
+            <Stack direction="row" justifyContent="center" spacing={2}>
+              <Button variant="contained" color="success" type="submit">
+                Save Invoice
+              </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={() => navigate("/dashboard/sales/invoices")}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </Stack>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 

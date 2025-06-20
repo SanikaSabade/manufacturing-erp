@@ -1,21 +1,33 @@
 import React, { useEffect, useState } from "react";
 import axios from "../utils/axios";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  FormControlLabel,
+  Checkbox,
+  Stack,
+  Paper,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 
 interface Material {
   _id: string;
   material_name: string;
 }
-
 interface PurchaseOrder {
   _id: string;
 }
-
 interface ReceivedItem {
   material: string;
-  quantity: string;
+  quantity: number;
   inspected: boolean;
-  notInspected:boolean;
+  notInspected: boolean;
 }
 
 const GRNForm: React.FC = () => {
@@ -43,153 +55,188 @@ const GRNForm: React.FC = () => {
             material: item.material._id,
             quantity: item.quantity,
             inspected: item.inspected,
+            notInspected: !item.inspected,
           })),
         });
       });
     }
   }, [id]);
 
-  const handleItemChange = (index: number, field: string, value: any) => {
+  const handleItemChange = <K extends keyof ReceivedItem>(
+    index: number,
+    field: K,
+    value: ReceivedItem[K]
+  ) => {
     const updatedItems = [...form.receivedItems];
-    updatedItems[index] = { ...updatedItems[index], [field]: value };
+    if (field === "inspected") {
+      updatedItems[index].inspected = value as boolean;
+      updatedItems[index].notInspected = !value;
+    } else if (field === "notInspected") {
+      updatedItems[index].notInspected = value as boolean;
+      updatedItems[index].inspected = !value;
+    } else {
+      updatedItems[index][field] = value;
+    }
     setForm((prev) => ({ ...prev, receivedItems: updatedItems }));
   };
-
   const addItem = () => {
     setForm((prev) => ({
       ...prev,
-      receivedItems: [...prev.receivedItems, { material: "", quantity: "", inspected: false ,notInspected:false}],
+      receivedItems: [
+        ...prev.receivedItems,
+        { material: "", quantity: 0, inspected: false, notInspected: false },
+      ],
     }));
   };
-
-  
-const removeItem = (index: number) => {
-  const updatedItems = [...form.receivedItems];
-  updatedItems.splice(index, 1);
-  setForm((prev) => ({ ...prev, receivedItems: updatedItems }));
-};
-
-
+  const removeItem = (index: number) => {
+    const updatedItems = [...form.receivedItems];
+    updatedItems.splice(index, 1);
+    setForm((prev) => ({ ...prev, receivedItems: updatedItems }));
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (id) {
-      await axios.put(`/api/grns/${id}`, form);
-    } else {
-      await axios.post("/api/grns", form);
+    const payload = {
+      ...form,
+      receivedItems: form.receivedItems.map((item) => ({ ...item, inspected: item.inspected })),
+    };
+    try {
+      if (id) {
+        await axios.put(`/api/grns/${id}`, payload);
+      } else {
+        await axios.post("/api/grns", payload);
+      }
+      navigate("/dashboard/purchase/grn");
+    } catch (error) {
+      console.error("Error submitting GRN:", error);
+      alert("Failed to submit GRN.");
     }
-    navigate("/dashboard/purchase/grn");
   };
-
+  
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">{id ? "Edit GRN" : "Add GRN"}</h2>
-      <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-4 rounded shadow">
-        <div>
-          <label className="block font-semibold mb-1">Purchase Order</label>
-          <select
-            value={form.purchaseOrder}
-            onChange={(e) => setForm((prev) => ({ ...prev, purchaseOrder: e.target.value }))}
-            required
-            className="w-full p-2 border rounded"
-          >
-            <option value="">Select PO</option>
-            {purchaseOrders.map((po) => (
-              <option key={po._id} value={po._id}>
-                {po._id}
-              </option>
-            ))}
-          </select>
-        </div>
+    <Box maxWidth={800} mx="auto" p={3}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        {id ? "Edit GRN" : "Add GRN"}
+      </Typography>
+      <Paper elevation={3} sx={{ p: 3, bgcolor: "#fafafa" }}>
+        <form onSubmit={handleSubmit}>
+          
+          <FormControl fullWidth required margin="normal">
+            <InputLabel>Purchase Order</InputLabel>
+            <Select
+              value={form.purchaseOrder}
+              onChange={(e) => setForm({ ...form, purchaseOrder: e.target.value })}
+              label="Purchase Order"
+            >
+              <MenuItem value="">Select PO</MenuItem>
+              {purchaseOrders.map((po) => (
+                <MenuItem key={po._id} value={po._id}>
+                  {po._id}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <div>
-          <label className="block font-semibold mb-1">Received Date</label>
-          <input
+          <TextField
+            label="Received Date"
             type="date"
             value={form.receivedDate}
-            onChange={(e) => setForm((prev) => ({ ...prev, receivedDate: e.target.value }))}
-            className="w-full p-2 border rounded"
+            onChange={(e) => setForm({ ...form, receivedDate: e.target.value })}
             required
+            fullWidth
+            margin="normal"
+            InputLabelProps={{ shrink: true }}
           />
-        </div>
 
-        <div>
-          <label className="block font-semibold mb-1">Received Items</label>
+          <Typography variant="h6" mt={2}>
+            Received Items
+          </Typography>
+
           {form.receivedItems.map((item, index) => (
-            <div key={index} className="grid grid-cols-3 gap-2 mb-2">
-              <select
-                value={item.material}
-                onChange={(e) => handleItemChange(index, "material", e.target.value)}
-                className="p-2 border rounded"
-              >
-                <option value="">Select Material</option>
-                {materials.map((mat) => (
-                  <option key={mat._id} value={mat._id}>
-                    {mat.material_name}
-                  </option>
-                ))}
-              </select>
-              <input
+            <Box
+              key={index}
+              display="flex"
+              flexWrap="wrap"
+              alignItems="center"
+              gap={2}
+              mt={1}
+              p={2}
+              bgcolor="#fff"
+              borderRadius={1}
+              border="1px solid #e0e0e0"
+            >
+              <FormControl fullWidth sx={{ flex: 1, minWidth: 200 }}>
+                <InputLabel>Material</InputLabel>
+                <Select
+                  value={item.material}
+                  onChange={(e) => handleItemChange(index, "material", e.target.value)}
+                  label="Material"
+                >
+                  <MenuItem value="">Select Material</MenuItem>
+                  {materials.map((mat) => (
+                    <MenuItem key={mat._id} value={mat._id}>
+                      {mat.material_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <TextField
+                label="Quantity"
                 type="number"
                 value={item.quantity}
-                placeholder="Quantity"
-                onChange={(e) => handleItemChange(index, "quantity", parseInt(e.target.value))}
-                className="p-2 border rounded"
+                onChange={(e) =>
+                  handleItemChange(index, "quantity", parseInt(e.target.value) || 0)
+                }
+                required
+                sx={{ flex: 1, minWidth: 100 }}
               />
-              <div>
-              <label className=" flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={item.inspected}
-                  onChange={(e) => handleItemChange(index, "inspected", e.target.checked)}
-                />
-                Inspected
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={item.notInspected}
-                  onChange={(e) => handleItemChange(index, "notInspected", e.target.checked)}
-                />
-                Not Inspected
-              </label>
-              </div>
-              <div>
-              <button
-    type="button"
-    onClick={() => removeItem(index)}
-    className="text-red-600 hover:underline"
-  >
-    Remove
-  </button>
-              </div>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={addItem}
-            className="mt-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            + Add Item
-          </button>
-        </div>
-<div className="flex gap-2 justify-center">
-        <button
-          type="submit"
-          className=" p-2 bg-green-600 text-white rounded hover:bg-green-700"
-        >
-          {id ? "Update GRN" : "Create GRN"}
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate("/dashboard/purchase/grn")}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          >
-          Cancel
-        </button>
-        </div>
 
-      </form>
-    </div>
+              <Box display="flex" flexDirection="column" justifyContent="center" flex={1}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={item.inspected}
+                      onChange={(e) => handleItemChange(index, "inspected", e.target.checked)}
+                    />
+                  }
+                  label="Inspected"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={item.notInspected}
+                      onChange={(e) => handleItemChange(index, "notInspected", e.target.checked)}
+                    />
+                  }
+                  label="Not Inspected"
+                />
+              </Box>
+
+              <Button variant="outlined" color="error" onClick={() => removeItem(index)}>
+                Remove
+              </Button>
+            </Box>
+          ))}
+
+          <Button variant="outlined" onClick={addItem} sx={{ mt: 1, mb: 3 }}>
+            + Add Item
+          </Button>
+
+          <Stack direction="row" justifyContent="center" spacing={2}>
+            <Button variant="contained" color="success" type="submit">
+              {id ? "Update GRN" : "Create GRN"}
+            </Button>
+            <Button
+              variant="outlined"
+              color="inherit"
+              onClick={() => navigate("/dashboard/purchase/grn")}
+            >
+              Cancel
+            </Button>
+          </Stack>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 

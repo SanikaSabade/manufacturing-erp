@@ -1,6 +1,20 @@
 import React, { useState } from "react";
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  Stack,
+  Card,
+  CardContent,
+  CardHeader,
+  type SelectChangeEvent,
+} from "@mui/material";
 
 const MaterialForm: React.FC = () => {
   const [form, setForm] = useState({
@@ -12,18 +26,17 @@ const MaterialForm: React.FC = () => {
     reorder_level: "",
     location: "",
   });
-
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
-
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    const { value } = e.target;
+    setForm((prev) => ({ ...prev, category: value }));
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -36,93 +49,101 @@ const MaterialForm: React.FC = () => {
       setLoading(false);
     }
   };
-
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Add New Material</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 bg-gray-50 p-6 rounded shadow">
-        <input
-          name="material_name"
-          value={form.material_name}
-          onChange={handleChange}
-          type="text"
-          placeholder="Material Name"
-          required
-          className="border p-2 rounded"
+    <Box maxWidth={600} mx="auto" mt={4}>
+      <Card variant="outlined" sx={{ boxShadow: 3, borderRadius: 2, bgcolor: "#fafafa" }}>
+        <CardHeader
+          title="Add New Material"
+          titleTypographyProps={{ variant: "h5", fontWeight: "bold" }}
         />
-        <input
-          name="material_code"
-          value={form.material_code}
-          onChange={handleChange}
-          type="text"
-          placeholder="Material Code"
-          required
-          className="border p-2 rounded"
-        />
-        <select
-          name="category"
-          value={form.category}
-          onChange={handleChange}
-          className="border p-2 rounded"
-        >
-          <option value="Raw">Raw</option>
-          <option value="Semi-finished">Semi-finished</option>
-          <option value="Finished">Finished</option>
-        </select>
-        <input
-          name="unit"
-          value={form.unit}
-          onChange={handleChange}
-          type="text"
-          placeholder="Unit (e.g., kg, pcs)"
-          required
-          className="border p-2 rounded"
-        />
-        <input
-          name="quantity_available"
-          value={form.quantity_available}
-          onChange={handleChange}
-          type="number"
-          placeholder="Quantity Available"
-          required
-          className="border p-2 rounded"
-        />
-        <input
-          name="reorder_level"
-          value={form.reorder_level}
-          onChange={handleChange}
-          type="number"
-          placeholder="Reorder Level"
-          required
-          className="border p-2 rounded"
-        />
-        <input
-          name="location"
-          value={form.location}
-          onChange={handleChange}
-          type="text"
-          placeholder="Storage Location"
-          required
-          className="border p-2 rounded"
-        />
-<div className="flex gap-2 justify-center">
-        <button
-          type="submit"
-          className=" p-2 bg-green-600 text-white rounded hover:bg-green-700"
-          disabled={loading}
-        >
-          {loading ? "Adding..." : "Add Material"}
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate("/dashboard/inventory/material")}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          >
-          Cancel
-        </button>
-        </div>
-      </form>
-    </div>
+        <CardContent>
+          <form onSubmit={handleSubmit}>
+            <Stack spacing={2}>
+              <TextField
+                label="Material Name"
+                name="material_name"
+                value={form.material_name}
+                onChange={handleInputChange}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Material Code"
+                name="material_code"
+                value={form.material_code}
+                onChange={handleInputChange}
+                required
+                fullWidth
+              />
+              <FormControl fullWidth required>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  name="category"
+                  value={form.category}
+                  onChange={handleSelectChange}
+                   label="Category"
+                >
+                  <MenuItem value="Raw">Raw</MenuItem>
+                  <MenuItem value="Semi-finished">Semi-finished</MenuItem>
+                  <MenuItem value="Finished">Finished</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                label="Unit (e.g., kg, pcs)"
+                name="unit"
+                value={form.unit}
+                onChange={handleInputChange}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Quantity Available"
+                name="quantity_available"
+                value={form.quantity_available}
+                onChange={handleInputChange}
+                required
+                fullWidth
+                type="number"
+              />
+              <TextField
+                label="Reorder Level"
+                name="reorder_level"
+                value={form.reorder_level}
+                onChange={handleInputChange}
+                required
+                fullWidth
+                type="number"
+              />
+              <TextField
+                label="Location"
+                name="location"
+                value={form.location}
+                onChange={handleInputChange}
+                required
+                fullWidth
+              />
+              <Stack direction="row" justifyContent="center" spacing={2}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? "Adding..." : "Add Material"}
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  onClick={() => navigate("/dashboard/inventory/material")}
+                >
+                  Cancel
+                </Button>
+              </Stack>
+            </Stack>
+          </form>
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
 

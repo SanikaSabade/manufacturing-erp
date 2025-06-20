@@ -1,4 +1,18 @@
 import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  Select,
+  MenuItem,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Paper,
+  Stack,
+  IconButton,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 
@@ -6,7 +20,6 @@ interface Customer {
   _id: string;
   name: string;
 }
-
 
 const SalesOrderForm: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -27,7 +40,7 @@ const SalesOrderForm: React.FC = () => {
       .catch((err) => console.error("Failed to load customers:", err));
   }, []);
 
-  const handleItemChange = (index: number, field: string, value: number) => {
+  const handleItemChange = (index: number, field: "quantity" | "price", value: number) => {
     const updatedItems = [...form.items];
     updatedItems[index] = { ...updatedItems[index], [field]: value };
     setForm({ ...form, items: updatedItems });
@@ -59,113 +72,109 @@ const SalesOrderForm: React.FC = () => {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Add Sales Order</h2>
-      <form onSubmit={handleSubmit} className="grid gap-4 bg-gray-50 p-4 rounded shadow">
-        <label className="font-medium">Select Customer</label>
-        <select
-          required
-          value={form.customerId}
-          onChange={(e) => setForm({ ...form, customerId: e.target.value })}
-          className="p-2 border rounded"
-        >
-          <option value="">Select Customer</option>
-          {customers.map((c) => (
-            <option key={c._id} value={c._id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
+    <Box maxWidth={700} mx="auto" p={3}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Add Sales Order
+      </Typography>
 
-        <label className="font-medium">Order Number</label>
-        <input
-          type="text"
-          placeholder="Order Number"
-          value={form.orderNumber}
-          onChange={(e) => setForm({ ...form, orderNumber: e.target.value })}
-          className="p-2 border rounded"
-          required
-        />
+      <Paper elevation={3} sx={{ p: 3 }}>
+        <form onSubmit={handleSubmit}>
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Select Customer</InputLabel>
+            <Select
+              required
+              label="Select Customer"
+              value={form.customerId}
+              onChange={(e) => setForm({ ...form, customerId: e.target.value })}
+            >
+              <MenuItem value="">Select Customer</MenuItem>
+              {customers.map((c) => (
+                <MenuItem key={c._id} value={c._id}>
+                  {c.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <label className="font-medium">Date</label>
-        <input
-          type="date"
-          value={form.date}
-          onChange={(e) => setForm({ ...form, date: e.target.value })}
-          className="p-2 border rounded"
-          required
-        />
+          <TextField
+            label="Order Number"
+            value={form.orderNumber}
+            onChange={(e) => setForm({ ...form, orderNumber: e.target.value })}
+            fullWidth
+            required
+            sx={{ mb: 2 }}
+          />
 
-        <label className="font-medium">Status</label>
-        <select
-          value={form.status}
-          onChange={(e) => setForm({ ...form, status: e.target.value })}
-          className="p-2 border rounded"
-        >
-          <option value="Pending">Pending</option>
-          <option value="Confirmed">Confirmed</option>
-          <option value="Shipped">Shipped</option>
-          <option value="Delivered">Delivered</option>
-        </select>
+          <TextField
+            label="Date"
+            type="date"
+            value={form.date}
+            onChange={(e) => setForm({ ...form, date: e.target.value })}
+            fullWidth
+            required
+            InputLabelProps={{ shrink: true }}
+            sx={{ mb: 2 }}
+          />
 
-        <h3 className="font-semibold">Items</h3>
-        {form.items.map((item, index) => (
-          <div key={index} className="grid grid-cols-2 gap-4 items-center">
-            <div>
-              <label className="block mb-1 text-sm font-medium">Quantity</label>
-              <input
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Status</InputLabel>
+            <Select
+              label="Status"
+              value={form.status}
+              onChange={(e) => setForm({ ...form, status: e.target.value })}
+            >
+              <MenuItem value="Pending">Pending</MenuItem>
+              <MenuItem value="Confirmed">Confirmed</MenuItem>
+              <MenuItem value="Shipped">Shipped</MenuItem>
+              <MenuItem value="Delivered">Delivered</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Typography variant="h6" mt={3} mb={1}>
+            Items
+          </Typography>
+
+          {form.items.map((item, index) => (
+            <Box key={index} display="flex" gap={2} alignItems="center" mb={2}>
+              <TextField
+                label="Quantity"
                 type="number"
-                placeholder="Quantity"
                 value={item.quantity}
                 onChange={(e) => handleItemChange(index, "quantity", Number(e.target.value))}
-                className="p-2 border rounded w-full"
-                required
+                fullWidth
               />
-            </div>
-
-            <div>
-              <label className="block mb-1 text-sm font-medium">Price</label>
-              <input
+              <TextField
+                label="Price"
                 type="number"
-                placeholder="Price"
                 value={item.price}
                 onChange={(e) => handleItemChange(index, "price", Number(e.target.value))}
-                className="p-2 border rounded w-full"
-                required
+                fullWidth
               />
-            </div>
+              <IconButton onClick={() => removeItem(index)} color="error">
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          ))}
 
-            <button
-              type="button"
-              onClick={() => removeItem(index)}
-              className="text-sm text-red-600 hover:underline col-span-2 text-right"
+          <Button variant="outlined" onClick={addItem} sx={{ mb: 3 }}>
+            + Add Item
+          </Button>
+
+          <Stack direction="row" justifyContent="center" spacing={2}>
+          <Button type="submit" variant="contained" color="success">
+              Submit Order
+            </Button>
+            <Button
+               variant="outlined"
+                color="inherit"
+              onClick={() => navigate("/dashboard/sales")}
             >
-              Remove
-            </button>
-          </div>
-        ))}
-
-        <button
-          type="button"
-          onClick={addItem}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-fit"
-        >
-          + Add Item
-        </button>
-<div className="flex gap-2 justify-center">
-        <button type="submit" className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
-          Submit Order
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate("/dashboard/sales")}
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          >
-          Cancel
-        </button>
-        </div>
-      </form>
-    </div>
+              Cancel
+            </Button>
+            </Stack>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 

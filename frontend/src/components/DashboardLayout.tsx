@@ -294,7 +294,6 @@ const DashboardLayout: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-gray-50 font-sans">
-      {/* Mobile Overlay */}
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
@@ -302,7 +301,6 @@ const DashboardLayout: React.FC = () => {
         />
       )}
 
-      {/* Sidebar */}
       <aside className={`
         ${sidebarCollapsed ? 'w-16' : 'w-64'} 
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
@@ -310,7 +308,7 @@ const DashboardLayout: React.FC = () => {
         border-r border-gray-300
       `}>
         <div className="flex flex-col h-full">
-          {/* Logo Section */}
+
           <div className="p-6 border-b border-gray-300">
             <div className="flex items-center justify-between">
               {!sidebarCollapsed && (
@@ -339,14 +337,12 @@ const DashboardLayout: React.FC = () => {
             </div>
           </div>
 
-          {/* Navigation */}
           <nav className="flex-1 py-4 overflow-y-auto">
             {SidebarLinks.map((link) => (
               <SidebarItem key={link.path} link={link} />
             ))}
           </nav>
 
-          {/* Settings & Logout */}
           <div className="p-4 border-t border-gray-200 space-y-2">
            
             
@@ -370,7 +366,7 @@ const DashboardLayout: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Header */}
+        
         <header className="bg-gray-100 border-b border-gray-300 px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -393,7 +389,6 @@ const DashboardLayout: React.FC = () => {
 
               
 
-              {/* User Menu */}
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
                   <span className="text-white font-medium text-sm">A</span>
@@ -410,7 +405,6 @@ const DashboardLayout: React.FC = () => {
           </div>
         </header>
 
-        {/* Main Content Area */}
         <div className="flex-1 overflow-auto p-6 bg-gray-100">
           <Outlet />
         </div>

@@ -101,10 +101,8 @@ router.get('/stats', async (req, res) => {
       }
     ]);
 
-    // Active Employees
     const activeEmployees = await Employee.countDocuments({ status: "Active" });
 
-    // Order status breakdown
     const receivedOrders = await PurchaseOrder.countDocuments({ status: "Received" });
     const pendingOrders = await SalesOrder.countDocuments({ status: { $in: ["Pending", "Confirmed"] } });
 

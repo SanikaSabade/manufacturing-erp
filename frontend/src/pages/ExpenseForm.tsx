@@ -1,4 +1,13 @@
 import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Stack,
+  Paper,
+  Alert,
+} from "@mui/material";
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
 
@@ -7,7 +16,6 @@ const ExpenseForm: React.FC = () => {
   const [paidBy, setPaidBy] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,70 +42,72 @@ const ExpenseForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">Add Expense</h2>
-      <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-4 rounded shadow">
-        <div>
-          <label className="block font-medium mb-1">Amount (₹)</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(parseFloat(e.target.value))}
-            required
-            className="w-full border px-3 py-2 rounded"
-            placeholder="Enter amount"
-          />
-        </div>
-        <div>
-          <label className="block font-medium mb-1">Paid By</label>
-          <input
-            type="text"
-            value={paidBy}
-            onChange={(e) => setPaidBy(e.target.value)}
-            required
-            className="w-full border px-3 py-2 rounded"
-            placeholder="Enter name"
-          />
-        </div>
-        <div>
-          <label className="block font-medium mb-1">Date</label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            required
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-        <div>
-          <label className="block font-medium mb-1">Notes</label>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="w-full border px-3 py-2 rounded"
-            placeholder="Optional notes"
-          />
-        </div>
-        {error && <p className="text-red-600">{error}</p>}
-        <div className="flex gap-2 justify-center">
+    <Box maxWidth={600} mx="auto" p={3}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Add Expense
+      </Typography>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-        >
-          {loading ? "Adding..." : "Add Expense"}
-        </button>
-        <button
-  type="button"
-  onClick={() => navigate("/dashboard/finance/expenses")}
-  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
->
-  Cancel
-</button>
-</div>
-      </form>
-    </div>
+      <Paper elevation={3} sx={{ p: 3, bgcolor: "#fafafa", borderRadius: 2 }}>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={3}>
+            <TextField
+              label="Amount (₹)"
+              value={amount}
+              onChange={(e) => setAmount(parseFloat(e.target.value))}
+              required
+              fullWidth
+              type="number"
+            />
+            <TextField
+              label="Paid By"
+              value={paidBy}
+              onChange={(e) => setPaidBy(e.target.value)}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+              fullWidth
+              type="date"
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              label="Notes"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              fullWidth
+              multiline
+              rows={3}
+            />
+            {error && (
+              <Alert severity="error">
+                {error}
+              </Alert>
+            )}
+            <Stack direction="row" justifyContent="center" spacing={2}>
+              <Button
+                variant="contained"
+                color="success"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? "Adding…" : "Add Expense"}
+              </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={() => navigate("/dashboard/finance/expenses")}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </Stack>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 

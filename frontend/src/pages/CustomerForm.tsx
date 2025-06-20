@@ -1,4 +1,12 @@
 import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Stack,
+  Paper,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../utils/axios";
 
@@ -30,10 +38,12 @@ const CustomerForm: React.FC = () => {
     }
   }, [id]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -44,64 +54,79 @@ const CustomerForm: React.FC = () => {
       }
       navigate("/dashboard/sales/customers");
     } catch (err) {
-      console.error("Save failed", err);
+      console.error("Save failed:", err);
     }
   };
-
+  
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">{id ? "Edit Customer" : "Add Customer"}</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4 bg-gray-50 p-6 rounded shadow">
-        <input
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          placeholder="Name"
-          required
-          className="p-2 border rounded"
-        />
-        <input
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          placeholder="Email"
-          required
-          className="p-2 border rounded"
-        />
-        <input
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-          placeholder="Phone"
-          required
-          className="p-2 border rounded"
-        />
-        <input
-          name="gstNumber"
-          value={form.gstNumber}
-          onChange={handleChange}
-          placeholder="GST Number"
-          required
-          className="p-2 border rounded"
-        />
-        <input
-          name="address"
-          value={form.address}
-          onChange={handleChange}
-          placeholder="Address"
-          required
-          className="p-2 border rounded"
-        />
-        <div className="col-span-2 flex gap-2 justify-center">
-          <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-            {id ? "Update" : "Add"}
-          </button>
-          <button type="button" onClick={() => navigate("/dashboard/sales/customers")} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
+    <Box maxWidth={600} mx="auto" p={3}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        {id ? "Edit Customer" : "Add Customer"}
+      </Typography>
+      <Paper elevation={3} sx={{ p: 3, bgcolor: "#fafafa" }}>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={2}>
+            <TextField
+              name="name"
+              label="Name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              name="email"
+              label="Email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              name="phone"
+              label="Phone"
+              value={form.phone}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              name="gstNumber"
+              label="GST Number"
+              value={form.gstNumber}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              name="address"
+              label="Address"
+              value={form.address}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+
+            <Stack direction="row" justifyContent="center" spacing={2}>
+              <Button
+                variant="contained"
+                color="success"
+                type="submit"
+              >
+                {id ? "Update" : "Add"}
+              </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={() => navigate("/dashboard/sales/customers")}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </Stack>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 

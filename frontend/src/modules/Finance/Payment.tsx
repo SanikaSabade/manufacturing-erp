@@ -84,7 +84,6 @@ const Payments: React.FC = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen font-inter">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <div>
@@ -93,7 +92,6 @@ const Payments: React.FC = () => {
           </div>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="flex items-center">
@@ -140,7 +138,6 @@ const Payments: React.FC = () => {
           </div>
         </div>
 
-        {/* Edit Form */}
         {editingPayment && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
             <div className="px-6 py-4 border-b border-gray-200">
@@ -231,7 +228,6 @@ const Payments: React.FC = () => {
           </div>
         )}
 
-        {/* Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900">Payments List</h3>

@@ -1,4 +1,13 @@
 import React, { useState } from "react";
+import {
+  Box,
+  TextField,
+  Button,
+  Stack,
+  MenuItem,
+  Typography,
+  Paper,
+} from "@mui/material";
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
 
@@ -13,12 +22,17 @@ const EmployeeForm: React.FC = () => {
     joinDate: "",
     status: "Active",
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | { name: string; value: any }>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const handleSubmit = async () => {
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
     try {
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}api/employees`, {
         ...formData,
@@ -27,33 +41,104 @@ const EmployeeForm: React.FC = () => {
       navigate("/dashboard/hr");
     } catch (err) {
       console.error("Add failed", err);
+    } finally {
+      setLoading(false);
     }
   };
-
+  
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Add New Employee</h2>
-      <div  className="grid grid-cols-1 gap-4 bg-gray-50 p-6 rounded shadow">
-        <input name="name" placeholder="Name" className="border rounded px-3 py-2" value={formData.name} onChange={handleChange} />
-        <input name="email" placeholder="Email" className="border rounded px-3 py-2" value={formData.email} onChange={handleChange} />
-        <input name="phone" placeholder="Phone" className="border rounded px-3 py-2" value={formData.phone} onChange={handleChange} />
-        <input name="role" placeholder="Role" className="border rounded px-3 py-2" value={formData.role} onChange={handleChange} />
-        <input name="salary" placeholder="Salary" type="number" className="border rounded px-3 py-2" value={formData.salary} onChange={handleChange} />
-        <input name="joinDate" type="date" className="border rounded px-3 py-2" value={formData.joinDate} onChange={handleChange} />
-        <select name="status" className="border rounded px-3 py-2" value={formData.status} onChange={handleChange}>
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
-        </select>
-      </div>
-      <div className="p-4 flex gap-2 justify-center">
-        <button onClick={handleSubmit} className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
-          Submit
-        </button>
-        <button onClick={() => navigate("/dashboard/hr")} className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
-          Cancel
-        </button>
-      </div>
-    </div>
+    <Box maxWidth={600} mx="auto" p={3}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Add New Employee
+      </Typography>
+      <Paper elevation={3} sx={{ p: 3, bgcolor: "#fafafa", borderRadius: 2 }}>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={2}>
+            <TextField
+              label="Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              fullWidth
+              type="email"
+            />
+            <TextField
+              label="Phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Salary"
+              name="salary"
+              value={formData.salary}
+              onChange={handleChange}
+              required
+              fullWidth
+              type="number"
+            />
+            <TextField
+              label="Join Date"
+              name="joinDate"
+              value={formData.joinDate}
+              onChange={handleChange}
+              required
+              fullWidth
+              type="date"
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              select
+              label="Status"
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              required
+              fullWidth
+            >
+              <MenuItem value="Active">Active</MenuItem>
+              <MenuItem value="Inactive">Inactive</MenuItem>
+            </TextField>
+            <Stack direction="row" justifyContent="center" spacing={2}>
+              <Button
+                variant="contained"
+                color="success"
+                disabled={loading}
+                type="submit"
+              >
+                {loading ? "Submitting..." : "Submit"}
+              </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={() => navigate("/dashboard/hr")}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </Stack>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 

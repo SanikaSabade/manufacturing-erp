@@ -56,7 +56,7 @@ const DashboardHome: React.FC = () => {
 
   return (
     <div className="space-y-10 p-6">
-      {/* Summary Cards */}
+
       <div className="grid grid-cols-3 gap-4">
         {financialData.map(({ name, value }) => (
           <div key={name} className="bg-white shadow p-6 rounded-lg text-center">
@@ -78,7 +78,6 @@ const DashboardHome: React.FC = () => {
         </div>
       </div>
 
-      {/* Top Products - Bar Chart */}
       <div className="bg-white p-6 shadow rounded-lg">
         <h3 className="text-xl font-bold text-gray-700 mb-4">Top 10 Products Sold</h3>
         <ResponsiveContainer width="100%" height={300}>
@@ -92,7 +91,6 @@ const DashboardHome: React.FC = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Top Categories - Pie Chart */}
       <div className="bg-white p-6 shadow rounded-lg">
         <h3 className="text-xl font-bold text-gray-700 mb-4">Top 10 Categories Sold</h3>
         <ResponsiveContainer width="100%" height={300}>
@@ -115,7 +113,6 @@ const DashboardHome: React.FC = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Last 10 Sales Orders */}
       <div className="bg-white p-6 shadow rounded-lg">
         <h3 className="text-xl font-bold text-gray-700 mb-4">Last 10 Sales Orders</h3>
         <table className="min-w-full text-sm text-left border">
@@ -140,7 +137,6 @@ const DashboardHome: React.FC = () => {
         </table>
       </div>
 
-      {/* Last 10 Purchase Orders */}
       <div className="bg-white p-6 shadow rounded-lg">
         <h3 className="text-xl font-bold text-gray-700 mb-4">Last 10 Purchase Orders</h3>
         <table className="min-w-full text-sm text-left border">

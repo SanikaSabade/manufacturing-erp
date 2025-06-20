@@ -1,6 +1,20 @@
 import React, { useState } from "react";
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Stack,
+  Alert,
+  Paper,
+  type SelectChangeEvent,
+} from "@mui/material";
 
 const UserForm: React.FC = () => {
   const navigate = useNavigate();
@@ -11,19 +25,23 @@ const UserForm: React.FC = () => {
     role: "operator",
     status: "active",
   });
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
+  
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     try {
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}api/users`, formData);
       navigate("/dashboard/admin");
@@ -33,80 +51,96 @@ const UserForm: React.FC = () => {
       setLoading(false);
     }
   };
-
+  
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-gray-50 p-6 shadow-md rounded">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New User</h2>
+    <Box maxWidth={500} mx="auto" mt={4}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Add New User
+      </Typography>
 
-      {error && <div className="mb-4 text-red-600">{error}</div>}
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 2, bgcolor: "#fafafa" }}>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={3}>
+            <TextField
+              label="Full Name"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+              fullWidth
+              type="email"
+            />
+            <TextField
+              label="Password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              required
+              fullWidth
+              type="password"
+            />
+            
+            <FormControl fullWidth required>
+              <InputLabel>Role</InputLabel>
+              <Select
+                name="role"
+                value={formData.role}
+                onChange={handleSelectChange}
+                label="Role"
+              >
+                <MenuItem value="admin">Admin</MenuItem>
+                <MenuItem value="manager">Manager</MenuItem>
+                <MenuItem value="operator">Operator</MenuItem>
+              </Select>
+            </FormControl>
+            
+            <FormControl fullWidth required>
+              <InputLabel>Status</InputLabel>
+              <Select
+                name="status"
+                value={formData.status}
+                onChange={handleSelectChange}
+                label="Status"
+              >
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="inactive">Inactive</MenuItem>
+              </Select>
+            </FormControl>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Full Name"
-          required
-          className="w-full border px-4 py-2 rounded"
-        />
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Email"
-          required
-          className="w-full border px-4 py-2 rounded"
-        />
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Password"
-          required
-          className="w-full border px-4 py-2 rounded"
-        />
-        <select
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          className="w-full border px-4 py-2 rounded"
-        >
-          <option value="admin">Admin</option>
-          <option value="manager">Manager</option>
-          <option value="operator">Operator</option>
-        </select>
-
-        <select
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-          className="w-full border px-4 py-2 rounded"
-        >
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
-
-        <div className="flex gap-4 p-5 justify-center">
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 disabled:opacity-50"
-          >
-            {loading ? "Adding..." : "Add User"}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate("/dashboard/admin")}
-            className="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
+            <Stack direction="row" justifyContent="center" spacing={2}>
+              <Button
+                variant="contained"
+                color="success"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? "Adding..." : "Add User"}
+              </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={() => navigate("/dashboard/admin")}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </Stack>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 

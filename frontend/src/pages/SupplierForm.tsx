@@ -1,4 +1,12 @@
 import React, { useState } from "react";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Stack,
+  Paper,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 
@@ -10,7 +18,6 @@ const SupplierForm: React.FC = () => {
     address: "",
     gstNumber: "",
   });
-
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,39 +31,42 @@ const SupplierForm: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-4">Add New Supplier</h2>
-      <form onSubmit={handleSubmit}         className="grid grid-cols-1 gap-4 bg-gray-50 p-6 rounded shadow" >
-        {["name", "email", "phone", "address", "gstNumber"].map((field) => (
-          <div key={field}>
-            <label className="block mb-1 font-medium capitalize">{field}</label>
-            <input
-              className="w-full border px-3 py-2 rounded"
-              value={(form as any)[field]}
-              onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-              required
-            />
-          </div>
-        ))}
-        <div className="flex gap-2 justify-center">
-        <button
-          type="submit"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        >
-          Add Supplier
-        </button>
+    <Box maxWidth={600} mx="auto" p={3}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Add New Supplier
+      </Typography>
+      <Paper elevation={3} sx={{ p: 3, bgcolor: "#fafafa", borderRadius: 2 }}>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={2}>
+            {["name", "email", "phone", "address", "gstNumber"].map((field) => (
+              <TextField
+                key={field}
+                label={field
+                  .replace(/([A-Z])/g, " $1") 
+                  .replace(/^./, (str) => str.toUpperCase())}
+                value={(form as any)[field]}
+                onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+                required
+                fullWidth
+              />
+            ))}
 
-        <button
-  type="button"
-  onClick={() => navigate("/dashboard/purchase/suppliers")}
-  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
->
-  Cancel
-</button>
-</div>
-
-      </form>
-    </div>
+            <Stack direction="row" justifyContent="center" spacing={2}>
+              <Button variant="contained" color="success" type="submit">
+                Add Supplier
+              </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={() => navigate("/dashboard/purchase/suppliers")}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </Stack>
+        </form>
+      </Paper>
+    </Box>
   );
 };
 
