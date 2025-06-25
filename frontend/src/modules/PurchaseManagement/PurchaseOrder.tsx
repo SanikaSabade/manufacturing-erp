@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../utils/axios";
+import {
+  TextField,
+  Button,
+  Stack,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
 
 interface Supplier {
   _id: string;
@@ -23,11 +32,21 @@ interface PurchaseOrder {
   orderDate: string;
   status: "Ordered" | "Received" | "Cancelled";
   items: Item[];
+  delivery_date?: string;
+  payment_status?: "Pending" | "Paid" | "Overdue";
+  priority?: "Low" | "Medium" | "High" | "Urgent";
+  linked_documents?: string[];
+  expected_delivery?: string;
+  approval_status?: "Draft" | "Pending" | "Approved" | "Rejected";
+  last_updated_by?: string;
   createdAt: string;
 }
 
 const PurchaseOrders: React.FC = () => {
   const [orders, setOrders] = useState<PurchaseOrder[]>([]);
+  const [employees, setEmployees] = useState<{ _id: string; name: string }[]>(
+    []
+  );
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editableOrder, setEditableOrder] = useState<Partial<PurchaseOrder>>({});
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -35,6 +54,7 @@ const PurchaseOrders: React.FC = () => {
 
   useEffect(() => {
     fetchOrders();
+    fetchEmployees();
     axios
       .get(`${import.meta.env.VITE_BACKEND_URL}api/suppliers`)
       .then((res) => setSuppliers(res.data))
@@ -48,6 +68,11 @@ const PurchaseOrders: React.FC = () => {
       .then((res) => setOrders(res.data))
       .catch((err) => console.error("Error fetching purchase orders:", err))
       .finally(() => setLoading(false));
+  };
+
+  const fetchEmployees = async () => {
+    const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}api/employees`);
+    setEmployees(res.data);
   };
 
   const handleEditToggle = (order: PurchaseOrder) => {
@@ -189,143 +214,208 @@ const PurchaseOrders: React.FC = () => {
         </div>
 
         {editingId && editableOrder && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Edit Purchase Order</h3>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Supplier
-                  </label>
-                  <select
-                    value={editableOrder.supplier?._id || ""}
-                    onChange={(e) =>
-                      handleEditChange(
-                        "supplier",
-                        suppliers.find((s) => s._id === e.target.value)
-                      )
-                    }
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                  >
-                    <option value="">Select supplier</option>
-                    {suppliers.map((sup) => (
-                      <option key={sup._id} value={sup._id}>
-                        {sup.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <h3 className="text-lg font-semibold text-gray-900">Edit Purchase Order</h3>
+    <Stack spacing={3} mt={3}>
+      <FormControl fullWidth>
+        <InputLabel>Supplier</InputLabel>
+        <Select
+        label="Supplier"
+          value={editableOrder.supplier?._id || ""}
+          onChange={(e) =>
+            handleEditChange(
+              "supplier",
+              suppliers.find((s) => s._id === e.target.value)
+            )
+          }
+        >
+          {suppliers.map((sup) => (
+            <MenuItem key={sup._id} value={sup._id}>
+              {sup.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Order Date
-                  </label>
-                  <input
-                    type="date"
-                    value={editableOrder.orderDate || ""}
-                    onChange={(e) => handleEditChange("orderDate", e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                  />
-                </div>
+      <TextField
+        label="Order Date"
+        type="date"
+        required
+        value={editableOrder.orderDate || ""}
+        onChange={(e) => handleEditChange("orderDate", e.target.value)}
+        InputLabelProps={{ shrink: true }}
+        fullWidth
+      />
+<FormControl fullWidth>
+        <InputLabel>Purchase Order Status</InputLabel>
+        <Select
+        label="Purchase Order Status"
+        required
+          value={editableOrder.status || ""}
+          onChange={(e) => handleEditChange("status", e.target.value)}
+        >
+          <MenuItem value="Ordered">Ordered</MenuItem>
+          <MenuItem value="Received">Received</MenuItem>
+          <MenuItem value="Cancelled">Cancelled</MenuItem>
+        </Select>
+      </FormControl>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Status
-                  </label>
-                  <select
-                    value={editableOrder.status || "Ordered"}
-                    onChange={(e) => handleEditChange("status", e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                  >
-                    <option value="Ordered">Ordered</option>
-                    <option value="Received">Received</option>
-                    <option value="Cancelled">Cancelled</option>
-                  </select>
-                </div>
-              </div>
+      <TextField
+        label="Delivery Date"
+        type="date"
+        required
+        value={editableOrder.delivery_date || ""}
+        onChange={(e) => handleEditChange("delivery_date", e.target.value)}
+        InputLabelProps={{ shrink: true }}
+        fullWidth
+      />
 
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-4">
-                  Items
-                </label>
-                <div className="space-y-3">
-                  {(editableOrder.items || []).map((item, idx) => (
-                    <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">
-                          Material Name
-                        </label>
-                        <input
-                          type="text"
-                          value={item.material.material_name}
-                          onChange={(e) => {
-                            const updated = [...(editableOrder.items || [])];
-                            updated[idx].material.material_name = e.target.value;
-                            setEditableOrder((prev) => ({ ...prev, items: updated }));
-                          }}
-                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="Enter material name"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">
-                          Quantity
-                        </label>
-                        <input
-                          type="number"
-                          value={item.quantity}
-                          onChange={(e) => {
-                            const updated = [...(editableOrder.items || [])];
-                            updated[idx].quantity = Number(e.target.value);
-                            setEditableOrder((prev) => ({ ...prev, items: updated }));
-                          }}
-                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="Enter quantity"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">
-                          Cost (₹)
-                        </label>
-                        <input
-                          type="number"
-                          value={item.cost}
-                          onChange={(e) => {
-                            const updated = [...(editableOrder.items || [])];
-                            updated[idx].cost = Number(e.target.value);
-                            setEditableOrder((prev) => ({ ...prev, items: updated }));
-                          }}
-                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="Enter cost"
-                        />
-                      </div>
-                    </div>
+      <FormControl fullWidth>
+        <InputLabel>Payment Status</InputLabel>
+        <Select
+        label="Payment Status"
+        required
+          value={editableOrder.payment_status || ""}
+          onChange={(e) => handleEditChange("payment_status", e.target.value)}
+        >
+          <MenuItem value="Pending">Pending</MenuItem>
+          <MenuItem value="Paid">Paid</MenuItem>
+          <MenuItem value="Overdue">Overdue</MenuItem>
+        </Select>
+      </FormControl>
+
+      <FormControl fullWidth>
+        <InputLabel>Priority</InputLabel>
+        <Select
+        label="Priority"
+          value={editableOrder.priority || ""}
+          onChange={(e) => handleEditChange("priority", e.target.value)}
+        >
+          <MenuItem value="Low">Low</MenuItem>
+          <MenuItem value="Medium">Medium</MenuItem>
+          <MenuItem value="High">High</MenuItem>
+          <MenuItem value="Urgent">Urgent</MenuItem>
+        </Select>
+      </FormControl>
+
+      <TextField
+        label="Expected Delivery"
+        type="date"
+        required
+        value={editableOrder.expected_delivery || ""}
+        onChange={(e) =>
+          handleEditChange("expected_delivery", e.target.value)
+        }
+        InputLabelProps={{ shrink: true }}
+        fullWidth
+      />
+
+      <FormControl fullWidth>
+        <InputLabel>Approval Status</InputLabel>
+        <Select
+        label="Approval Status"
+          value={editableOrder.approval_status || ""}
+          onChange={(e) => handleEditChange("approval_status", e.target.value)}
+        >
+          <MenuItem value="Draft">Draft</MenuItem>
+          <MenuItem value="Pending">Pending</MenuItem>
+          <MenuItem value="Approved">Approved</MenuItem>
+          <MenuItem value="Rejected">Rejected</MenuItem>
+        </Select>
+      </FormControl>
+
+      <TextField
+      required
+        label="Linked Documents (comma separated)"
+        value={(editableOrder.linked_documents || []).join(", ")}
+        onChange={(e) =>
+          handleEditChange(
+            "linked_documents",
+            e.target.value.split(",").map((doc) => doc.trim())
+          )
+        }
+        fullWidth
+      />
+
+     
+<FormControl fullWidth>
+                <InputLabel>Last Updated By</InputLabel>
+                <Select
+                  label="Last Updated By"
+                  value={editableOrder.last_updated_by ||""}
+                  onChange={(e) => handleEditChange("last_updated_by", e.target.value )}
+                >
+                  {employees.map((emp) => (
+                    <MenuItem key={emp._id} value={emp._id}>
+                      {emp.name}
+                    </MenuItem>
                   ))}
-                </div>
-              </div>
+                </Select>
+              </FormControl>
 
-              <div className="flex gap-3">
-                <button
-                  onClick={handleEditSubmit}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                >
-                  Save Changes
-                </button>
-                <button
-                  onClick={() => {
-                    setEditingId(null);
-                    setEditableOrder({});
-                  }}
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+      <div>
+        <div className="text-sm font-medium text-gray-700">Items</div>
+        <Stack spacing={2}>
+          {(editableOrder.items || []).map((item, idx) => (
+            <Stack key={idx} spacing={1} p={2} bgcolor="#f9fafb" borderRadius={1}>
+              <TextField
+                label="Material Name"
+                value={item.material.material_name}
+                onChange={(e) => {
+                  const updated = [...(editableOrder.items || [])];
+                  updated[idx].material.material_name = e.target.value;
+                  setEditableOrder((prev) => ({ ...prev, items: updated }));
+                }}
+                fullWidth
+              />
+              <TextField
+                label="Quantity"
+                type="number"
+                value={item.quantity}
+                onChange={(e) => {
+                  const updated = [...(editableOrder.items || [])];
+                  updated[idx].quantity = Number(e.target.value);
+                  setEditableOrder((prev) => ({ ...prev, items: updated }));
+                }}
+                fullWidth
+              />
+              <TextField
+                label="Cost"
+                type="number"
+                value={item.cost}
+                onChange={(e) => {
+                  const updated = [...(editableOrder.items || [])];
+                  updated[idx].cost = Number(e.target.value);
+                  setEditableOrder((prev) => ({ ...prev, items: updated }));
+                }}
+                fullWidth
+              />
+            </Stack>
+          ))}
+        </Stack>
+      </div>
+
+      <Stack direction="row" spacing={2}>
+        <Button variant="contained"
+                  color="success"
+                   onClick={handleEditSubmit}>
+          Save Changes
+        </Button>
+        <Button
+          variant="contained"
+                  color="inherit"
+          onClick={() => {
+            setEditingId(null);
+            setEditableOrder({});
+          }}
+        >
+          Cancel
+        </Button>
+      </Stack>
+    </Stack>
+  </div>
+)}
+
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
@@ -342,13 +432,30 @@ const PurchaseOrders: React.FC = () => {
                     Order Date
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
+                    Purchase order Status
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Items
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Delivery Date
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Payment Status
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Total
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Priority
+                  </th> <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Linked Documents
+                  </th> <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Expected Delivery
+                  </th> <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Approval Status
+                  </th> <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Last Updated By
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Created At
@@ -358,6 +465,7 @@ const PurchaseOrders: React.FC = () => {
                   </th>
                 </tr>
               </thead>
+              
               <tbody className="bg-white divide-y divide-gray-200">
                 {orders.length === 0 ? (
                   <tr>
@@ -404,10 +512,46 @@ const PurchaseOrders: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {order.delivery_date ? new Date(order.delivery_date).toLocaleDateString() : "N/A"}
+                      </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                      {order.payment_status}
+                      </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
                           ₹{calculateTotal(order.items)}
                         </div>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                      {order.priority}                   
+                         </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm text-gray-900">{order.linked_documents?.join(", ") || "N/A"}</div>
+                      </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                      {order.expected_delivery ? new Date(order.expected_delivery).toLocaleDateString() : "N/A"}              
+                      </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                      {order.approval_status}              
+                       </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                      {order.last_updated_by && typeof order.last_updated_by === "object"
+    ? (order.last_updated_by as any).name
+    : (order.last_updated_by && employees.find(emp => emp._id === order.last_updated_by)?.name) || "N/A"}
+</td>
+
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
                           {new Date(order.createdAt).toLocaleDateString()}

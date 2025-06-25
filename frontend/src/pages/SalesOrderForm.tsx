@@ -85,7 +85,6 @@ const SalesOrderForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ✅ Calculate total_amount
     const totalAmount = form.items.reduce(
       (sum, item) => sum + item.quantity * item.price,
       0
