@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../utils/axios";
+import { TextField, Button, Stack, Box, Typography } from "@mui/material";
+
 
 interface Customer {
   _id?: string;
@@ -8,7 +10,15 @@ interface Customer {
   phone: string;
   gstNumber: string;
   address: string;
+  contact_person: "",
+  billing_address: "",
+  credit_limit: 0,
+  payment_terms: "",
+  bank_details: "",
+  pan_number: "",
+  documents: string[];
   createdAt?: string;
+  
 }
 
 const Customers: React.FC = () => {
@@ -19,6 +29,13 @@ const Customers: React.FC = () => {
     phone: "",
     gstNumber: "",
     address: "",
+    contact_person: "",
+  billing_address: "",
+  credit_limit: 0,
+  payment_terms: "",
+  bank_details: "",
+  pan_number: "",
+  documents: []
   });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -34,7 +51,13 @@ const Customers: React.FC = () => {
   };
 
   const resetForm = () => {
-    setForm({ name: "", email: "", phone: "", gstNumber: "", address: "" });
+    setForm({ name: "", email: "", phone: "", gstNumber: "", address: "",contact_person: "",
+      billing_address: "",
+      credit_limit: 0,
+      payment_terms: "",
+      bank_details: "",
+      pan_number: "",
+      documents: [] });
     setEditingId(null);
   };
 
@@ -100,89 +123,211 @@ const Customers: React.FC = () => {
         </div>
 
         {showForm && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">{editingId ? "Edit Customer" : "Add Customer"}</h3>
-            </div>
-            <form onSubmit={handleSubmit} className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                  <input
-                    name="name"
-                    value={form.name}
-                    onChange={handleInputChange}
-                    placeholder="Enter name"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                  <input
-                    name="email"
-                    value={form.email}
-                    onChange={handleInputChange}
-                    placeholder="Enter email"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                  <input
-                    name="phone"
-                    value={form.phone}
-                    onChange={handleInputChange}
-                    placeholder="Enter phone"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">GST Number</label>
-                  <input
-                    name="gstNumber"
-                    value={form.gstNumber}
-                    onChange={handleInputChange}
-                    placeholder="Enter GST number"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    required
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                  <input
-                    name="address"
-                    value={form.address}
-                    onChange={handleInputChange}
-                    placeholder="Enter address"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  type="submit"
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                >
-                  {editingId ? "Update Customer" : "Add Customer"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    resetForm();
-                    setShowForm(false);
-                  }}
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+  <Box className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+    <Box className="px-6 py-4 border-b border-gray-200">
+      <Typography variant="h6">
+        {editingId ? "Edit Customer" : "Add Customer"}
+      </Typography>
+    </Box>
+    <Box component="form" onSubmit={handleSubmit} p={3}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 2,
+        }}
+      >
+        {/* Name */}
+        <Box sx={{ flex: "1 1 48%" }}>
+          <TextField
+            label="Name"
+            fullWidth
+            name="name"
+            value={form.name}
+            onChange={handleInputChange}
+            required
+            size="small"
+          />
+        </Box>
+
+        {/* Email */}
+        <Box sx={{ flex: "1 1 48%" }}>
+          <TextField
+            label="Email"
+            fullWidth
+            name="email"
+            value={form.email}
+            onChange={handleInputChange}
+            required
+            size="small"
+            type="email"
+          />
+        </Box>
+
+        {/* Phone */}
+        <Box sx={{ flex: "1 1 48%" }}>
+          <TextField
+            label="Phone"
+            fullWidth
+            name="phone"
+            value={form.phone}
+            onChange={handleInputChange}
+            required
+            size="small"
+          />
+        </Box>
+
+        {/* GST Number */}
+        <Box sx={{ flex: "1 1 48%" }}>
+          <TextField
+            label="GST Number"
+            fullWidth
+            name="gstNumber"
+            value={form.gstNumber}
+            onChange={handleInputChange}
+            required
+            size="small"
+          />
+        </Box>
+
+        {/* Address - full width */}
+        <Box sx={{ flex: "1 1 100%" }}>
+          <TextField
+            label="Address"
+            fullWidth
+            name="address"
+            value={form.address}
+            onChange={handleInputChange}
+            required
+            size="small"
+          />
+        </Box>
+
+        {/* Contact Person */}
+        <Box sx={{ flex: "1 1 48%" }}>
+          <TextField
+            label="Contact Person"
+            fullWidth
+            name="contact_person"
+            value={form.contact_person}
+            onChange={handleInputChange}
+            required
+            size="small"
+          />
+        </Box>
+
+        {/* Billing Address */}
+        <Box sx={{ flex: "1 1 48%" }}>
+          <TextField
+            label="Billing Address"
+            fullWidth
+            name="billing_address"
+            value={form.billing_address}
+            onChange={handleInputChange}
+            required
+            size="small"
+          />
+        </Box>
+
+        {/* Credit Limit */}
+        <Box sx={{ flex: "1 1 48%" }}>
+          <TextField
+            label="Credit Limit"
+            fullWidth
+            name="credit_limit"
+            value={form.credit_limit}
+            onChange={handleInputChange}
+            required
+            size="small"
+            type="number"
+          />
+        </Box>
+
+        {/* Payment Terms */}
+        <Box sx={{ flex: "1 1 48%" }}>
+          <TextField
+            label="Payment Terms"
+            fullWidth
+            name="payment_terms"
+            value={form.payment_terms}
+            onChange={handleInputChange}
+            required
+            size="small"
+          />
+        </Box>
+
+        {/* Bank Details */}
+        <Box sx={{ flex: "1 1 48%" }}>
+          <TextField
+            label="Bank Details"
+            fullWidth
+            name="bank_details"
+            value={form.bank_details}
+            onChange={handleInputChange}
+            required
+            size="small"
+          />
+        </Box>
+
+        {/* PAN Number */}
+        <Box sx={{ flex: "1 1 48%" }}>
+          <TextField
+            label="PAN Number"
+            fullWidth
+            name="pan_number"
+            value={form.pan_number}
+            onChange={handleInputChange}
+            required
+            size="small"
+          />
+        </Box>
+
+        {/* Documents - full width */}
+        <Box sx={{ flex: "1 1 100%" }}>
+          <TextField
+            label="Documents (comma-separated URLs)"
+            fullWidth
+            name="documents"
+            value={form.documents.join(", ")}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                documents: e.target.value.split(",").map((doc) => doc.trim()),
+              })
+            }
+            size="small"
+          />
+        </Box>
+      </Box>
+
+      <Box mt={3}>
+        <Stack direction="row" spacing={2}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="success"
+            size="medium"
+          >
+            {editingId ? "Update Customer" : "Add Customer"}
+          </Button>
+          <Button
+                  variant="contained"
+                  color="inherit"
+            onClick={() => {
+              resetForm();
+              setShowForm(false);
+            }}
+            size="medium"
+          >
+            Cancel
+          </Button>
+        </Stack>
+      </Box>
+    </Box>
+  </Box>
+)}
+
+
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
@@ -197,6 +342,15 @@ const Customers: React.FC = () => {
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">GST Number</th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-[150px]">Address</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Person</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Billing Address</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit Limit</th>
+<th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Terms</th>
+<th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank Details</th>
+<th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PAN Number</th>
+<th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Documents</th>
+
+
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
@@ -231,6 +385,22 @@ const Customers: React.FC = () => {
                       <td className="px-3 py-2 max-w-[150px] whitespace-normal break-words">
                         <div className="text-sm text-gray-900 truncate">{customer.address}</div>
                       </td>
+                      <td className="px-3 py-2"><div className="text-sm text-gray-900">{customer.contact_person}</div></td>
+<td className="px-3 py-2">
+<div className="text-sm text-gray-900">{customer.billing_address}</div></td>
+<td className="px-3 py-2"><div className="text-sm text-gray-900">{customer.credit_limit}</div></td>
+<td className="px-3 py-2"><div className="text-sm text-gray-900">{customer.payment_terms}</div></td>
+<td className="px-3 py-2"><div className="text-sm text-gray-900">{customer.bank_details}</div></td>
+<td className="px-3 py-2"><div className="text-sm text-gray-900">{customer.pan_number}</div></td>
+<td className="px-3 py-2">
+  <div className="text-sm text-gray-900">
+    {customer.documents && customer.documents.length > 0
+      ? customer.documents.join(", ")
+      : "-"}
+  </div>
+</td>
+
+
                       <td className="px-3 py-2 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
                           {customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : "-"}

@@ -19,6 +19,15 @@ import activityLogRoutes from './routes/Admin&Miscellaneous/activityLogRoutes';
 import settingsRoutes from './routes/Admin&Miscellaneous/settingsRoutes';
 import authRoutes from './routes/authRoutes';
 import dashboardRoutes from './routes/dashboard'; 
+import workOrderRoutes from './routes/Inventory/work_orders';
+import bomRoutes from './routes/Inventory/BOM';
+import machineRoutes from './routes/Inventory/machines';
+import qualityCheckRoutes from './routes/Inventory/quality_checks';
+import maintenanceLogRoutes from './routes/Inventory/maintenance_logs';
+import projectRoutes from './routes/Projects/projects';
+import auditTrailRoutes from './routes/Admin&Miscellaneous/audit_trial';
+import notificationRoutes from './routes/Admin&Miscellaneous/notifications';
+
 
 
 dotenv.config();
@@ -34,6 +43,12 @@ app.use('/api/dashboard', dashboardRoutes);
 
 app.use('/api/materials', materialRoutes);
 app.use('/api/inventory-logs', inventoryLogRoutes);
+app.use('/api/work-orders', workOrderRoutes);
+app.use('/api/boms', bomRoutes);
+app.use('/api/machines', machineRoutes);
+app.use('/api/quality-checks', qualityCheckRoutes);
+app.use('/api/maintenance-logs', maintenanceLogRoutes);
+
 
 app.use('/api/customers', customerRoutes);
 app.use('/api/sales-orders', salesOrderRoutes);
@@ -56,6 +71,11 @@ app.use('/api/expenses', expenseRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/activity-logs', activityLogRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/audit-trail', auditTrailRoutes);
+
+app.use('/api/projects', projectRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

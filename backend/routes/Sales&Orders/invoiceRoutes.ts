@@ -1,6 +1,7 @@
 import express from 'express';
 import Invoice from '../../models/Sales&Orders/Invoice';
 
+
 const router = express.Router();
 
 router.post('/', async (req, res) => {
@@ -16,7 +17,8 @@ router.post('/', async (req, res) => {
 router.get('/', async (_req, res) => {
   try {
     const invoices = await Invoice.find()
-      .populate('salesOrder', 'orderNumber date status'); 
+      .populate('salesOrder', 'orderNumber date status')
+      .populate('received_by', 'name');
     res.json(invoices);
   } catch (error: any) {
     console.error("Invoice GET error:", error.message);

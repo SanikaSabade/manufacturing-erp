@@ -5,25 +5,31 @@ const paymentSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: ["Incoming", "Outgoing"],
-      required: true
+      required: true,
     },
     amount: {
       type: Number,
-      required: true
+      required: true,
     },
-    reference: {
-      type: String
+    reference_number: {
+      type: String,
+      required: false,
     },
     date: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     mode: {
-      type: String 
+      type: String, 
     },
     notes: {
-      type: String
-    }
+      type: String,
+    },
+    approved_by: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employee", 
+      required: false,
+    },
   },
   { timestamps: true }
 );
