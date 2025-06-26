@@ -533,7 +533,26 @@ const PurchaseOrders: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
-                      <div className="text-sm text-gray-900">{order.linked_documents?.join(", ") || "N/A"}</div>
+  {order.linked_documents && order.linked_documents.length > 0 && order.linked_documents.some((url) => url.trim() !== "") ? (
+    <div className="flex flex-col space-y-1">
+      {order.linked_documents
+        .filter((url) => url.trim() !== "")
+        .map((url, index) => (
+          <a
+            key={index}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline text-sm"
+          >
+            Document {index + 1}
+          </a>
+        ))}
+    </div>
+  ) : (
+    <span className="text-gray-500">N/A</span>
+  )}
+
                       </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

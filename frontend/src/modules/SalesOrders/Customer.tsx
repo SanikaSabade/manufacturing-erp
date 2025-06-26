@@ -137,7 +137,6 @@ const Customers: React.FC = () => {
           gap: 2,
         }}
       >
-        {/* Name */}
         <Box sx={{ flex: "1 1 48%" }}>
           <TextField
             label="Name"
@@ -150,7 +149,6 @@ const Customers: React.FC = () => {
           />
         </Box>
 
-        {/* Email */}
         <Box sx={{ flex: "1 1 48%" }}>
           <TextField
             label="Email"
@@ -164,7 +162,6 @@ const Customers: React.FC = () => {
           />
         </Box>
 
-        {/* Phone */}
         <Box sx={{ flex: "1 1 48%" }}>
           <TextField
             label="Phone"
@@ -177,7 +174,6 @@ const Customers: React.FC = () => {
           />
         </Box>
 
-        {/* GST Number */}
         <Box sx={{ flex: "1 1 48%" }}>
           <TextField
             label="GST Number"
@@ -190,7 +186,6 @@ const Customers: React.FC = () => {
           />
         </Box>
 
-        {/* Address - full width */}
         <Box sx={{ flex: "1 1 100%" }}>
           <TextField
             label="Address"
@@ -203,7 +198,6 @@ const Customers: React.FC = () => {
           />
         </Box>
 
-        {/* Contact Person */}
         <Box sx={{ flex: "1 1 48%" }}>
           <TextField
             label="Contact Person"
@@ -216,7 +210,6 @@ const Customers: React.FC = () => {
           />
         </Box>
 
-        {/* Billing Address */}
         <Box sx={{ flex: "1 1 48%" }}>
           <TextField
             label="Billing Address"
@@ -229,7 +222,6 @@ const Customers: React.FC = () => {
           />
         </Box>
 
-        {/* Credit Limit */}
         <Box sx={{ flex: "1 1 48%" }}>
           <TextField
             label="Credit Limit"
@@ -243,7 +235,6 @@ const Customers: React.FC = () => {
           />
         </Box>
 
-        {/* Payment Terms */}
         <Box sx={{ flex: "1 1 48%" }}>
           <TextField
             label="Payment Terms"
@@ -256,7 +247,6 @@ const Customers: React.FC = () => {
           />
         </Box>
 
-        {/* Bank Details */}
         <Box sx={{ flex: "1 1 48%" }}>
           <TextField
             label="Bank Details"
@@ -269,7 +259,6 @@ const Customers: React.FC = () => {
           />
         </Box>
 
-        {/* PAN Number */}
         <Box sx={{ flex: "1 1 48%" }}>
           <TextField
             label="PAN Number"
@@ -282,7 +271,6 @@ const Customers: React.FC = () => {
           />
         </Box>
 
-        {/* Documents - full width */}
         <Box sx={{ flex: "1 1 100%" }}>
           <TextField
             label="Documents (comma-separated URLs)"
@@ -393,11 +381,26 @@ const Customers: React.FC = () => {
 <td className="px-3 py-2"><div className="text-sm text-gray-900">{customer.bank_details}</div></td>
 <td className="px-3 py-2"><div className="text-sm text-gray-900">{customer.pan_number}</div></td>
 <td className="px-3 py-2">
-  <div className="text-sm text-gray-900">
-    {customer.documents && customer.documents.length > 0
-      ? customer.documents.join(", ")
-      : "-"}
-  </div>
+  {customer.documents && customer.documents.length > 0 && customer.documents.some((url) => url.trim() !== "") ? (
+    <div className="flex flex-col space-y-1">
+      {customer.documents
+        .filter((url) => url.trim() !== "")
+        .map((url, index) => (
+          <a
+            key={index}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline text-sm"
+          >
+            Document {index + 1}
+          </a>
+        ))}
+    </div>
+  ) : (
+    <span className="text-gray-500">N/A</span>
+  )}
+
 </td>
 
 

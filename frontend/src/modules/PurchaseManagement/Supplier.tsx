@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../utils/axios";
+import {
+  Box,
+  Stack,
+  TextField,
+  Button,
+} from "@mui/material";
 
 interface Supplier {
   _id?: string;
@@ -8,6 +14,13 @@ interface Supplier {
   phone: string;
   address: string;
   gstNumber: string;
+  contact_person: string;
+  billing_address: string;
+  credit_limit?: number;
+  payment_terms?: string;
+  bank_details?: string;
+  pan_number?: string;
+  documents?: string[];
 }
 
 const Suppliers: React.FC = () => {
@@ -18,6 +31,13 @@ const Suppliers: React.FC = () => {
     phone: "",
     address: "",
     gstNumber: "",
+    contact_person: "",
+    billing_address: "",
+    credit_limit: 0,
+    payment_terms: "",
+    bank_details: "",
+    pan_number: "",
+    documents: []
   });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -43,6 +63,13 @@ const Suppliers: React.FC = () => {
       phone: "",
       address: "",
       gstNumber: "",
+      contact_person: "",
+      billing_address: "",
+      credit_limit: 0,
+      payment_terms: "",
+      bank_details: "",
+      pan_number: "",
+      documents: []
     });
     setEditingId(null);
   };
@@ -103,89 +130,131 @@ const Suppliers: React.FC = () => {
         </div>
 
         {showForm && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">{editingId ? "Edit Supplier" : "Add Supplier"}</h3>
-            </div>
-            <form onSubmit={handleSubmit} className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                  <input
-                    name="name"
-                    value={form.name}
-                    onChange={handleInputChange}
-                    placeholder="Enter name"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                  <input
-                    name="email"
-                    value={form.email}
-                    onChange={handleInputChange}
-                    placeholder="Enter email"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                  <input
-                    name="phone"
-                    value={form.phone}
-                    onChange={handleInputChange}
-                    placeholder="Enter phone"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">GST Number</label>
-                  <input
-                    name="gstNumber"
-                    value={form.gstNumber}
-                    onChange={handleInputChange}
-                    placeholder="Enter GST number"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    required
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                  <input
-                    name="address"
-                    value={form.address}
-                    onChange={handleInputChange}
-                    placeholder="Enter address"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  type="submit"
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                >
-                  {editingId ? "Update Supplier" : "Add Supplier"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    resetForm();
-                    setShowForm(false);
-                  }}
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+  <Box
+    component="form"
+    onSubmit={handleSubmit}
+    sx={{ p: 3, bgcolor: 'white', boxShadow: 1, borderRadius: 2, border: '1px solid #e0e0e0' }}
+  >
+    <h3>{editingId ? "Edit Supplier" : "Add Supplier"}</h3>
+    <Stack spacing={2}>
+      <TextField
+        name="name"
+        label="Name"
+        value={form.name}
+        onChange={handleInputChange}
+        required
+        fullWidth
+      />
+      <TextField
+        name="email"
+        label="Email"
+        value={form.email}
+        onChange={handleInputChange}
+        required
+        fullWidth
+      />
+      <TextField
+        name="phone"
+        label="Phone"
+        value={form.phone}
+        onChange={handleInputChange}
+        required
+        fullWidth
+      />
+      <TextField
+        name="gstNumber"
+        label="GST Number"
+        value={form.gstNumber}
+        onChange={handleInputChange}
+        required
+        fullWidth
+      />
+      <TextField
+        name="address"
+        label="Address"
+        value={form.address}
+        onChange={handleInputChange}
+        required
+        fullWidth
+      />
+      <TextField
+        name="contact_person"
+        label="Contact Person"
+        value={form.contact_person}
+        onChange={handleInputChange}
+        required
+        fullWidth
+      />
+      <TextField
+        name="billing_address"
+        label="Billing Address"
+        value={form.billing_address}
+        onChange={handleInputChange}
+        required
+        fullWidth
+      />
+      <TextField
+        name="credit_limit"
+        label="Credit Limit"
+        value={form.credit_limit}
+        onChange={(e) =>
+          setForm({ ...form, credit_limit: Number(e.target.value) })
+        }
+        fullWidth
+        type="number"
+      />
+      <TextField
+        name="payment_terms"
+        label="Payment Terms"
+        value={form.payment_terms}
+        onChange={handleInputChange}
+        fullWidth
+      />
+      <TextField
+        name="bank_details"
+        label="Bank Details"
+        value={form.bank_details}
+        onChange={handleInputChange}
+        fullWidth
+      />
+      <TextField
+        name="pan_number"
+        label="PAN Number"
+        value={form.pan_number}
+        onChange={handleInputChange}
+        fullWidth
+      />
+      <TextField
+        name="documents"
+        label="Documents (comma separated URLs)"
+        value={form.documents?.join(", ") || ""}
+        onChange={(e) =>
+          setForm({ ...form, documents: e.target.value.split(",").map((url) => url.trim()) })
+        }
+        fullWidth
+      />
+      <Stack direction="row" spacing={2}>
+        <Button
+          variant="contained"
+          color="success"
+          type="submit"
+        >
+          {editingId ? "Update Supplier" : "Add Supplier"}
+        </Button>
+        <Button
+          variant="contained"
+          color="inherit"
+          onClick={() => {
+            resetForm();
+            setShowForm(false);
+          }}
+        >
+          Cancel
+        </Button>
+      </Stack>
+    </Stack>
+  </Box>
+)}
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
@@ -200,6 +269,13 @@ const Suppliers: React.FC = () => {
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider max-w-[150px]">Address</th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">GST Number</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Person</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Billing Address</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Credit Limit</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Terms</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank Details</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pan Number</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Documents</th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -234,6 +310,43 @@ const Suppliers: React.FC = () => {
                       <td className="px-3 py-2 whitespace-nowrap">
                         <div className="text-sm text-gray-900">{supplier.gstNumber}</div>
                       </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{supplier.contact_person}</div>
+                      </td><td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{supplier.billing_address}</div>
+                      </td><td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{supplier.credit_limit}</div>
+                      </td><td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{supplier.payment_terms}</div>
+                      </td><td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{supplier.bank_details}</div>
+                      </td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{supplier.pan_number}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+  {supplier.documents && supplier.documents.length > 0 && supplier.documents.some((url) => url.trim() !== "") ? (
+    <div className="flex flex-col space-y-1">
+      {supplier.documents
+        .filter((url) => url.trim() !== "")
+        .map((url, index) => (
+          <a
+            key={index}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline text-sm"
+          >
+            Document {index + 1}
+          </a>
+        ))}
+    </div>
+  ) : (
+    <span className="text-gray-500">N/A</span>
+  )}
+</td>
+
+
                       <td className="px-3 py-2 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
                           <button

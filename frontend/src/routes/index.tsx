@@ -30,8 +30,13 @@ import InventoryForm from "../pages/InventoryForm";
 import MaterialForm from "../pages/MaterialForm";
 import SettingForm from "../pages/SettingForm";
 import UserForm from "../pages/UserFrom";
-import DashboardHome from "../components/Dashboardhome"; 
-
+import DashboardHome from "../components/Dashboardhome";
+import Projects from "../modules/Projects/Project";
+import ProjectForm from "../pages/ProjectForm";
+import AuditTrail from "../modules/AdminMiscellaneous/Audit_trail";
+import AuditTrailForm from "../pages/AuditTrailForm";
+import NotificationPage from "../modules/AdminMiscellaneous/Notification";
+import NotificationForm from "../pages/NotificationForm";
 
 
 export const router = createBrowserRouter([
@@ -70,9 +75,12 @@ export const router = createBrowserRouter([
       {path:"material/add" ,element:<MaterialForm/> },
       {path:"setting/add" ,element:<SettingForm/> },
       {path:"user/add" ,element:<UserForm/> },
-
-
-
+      {path:"projects" ,element:<Projects/> },
+      {path:"admin/audit_trail" ,element:<AuditTrail/> },
+      {path:"admin/notification" ,element:<NotificationPage/> },
+      {path:"notification/add" ,element:<NotificationForm/> },
+      {path:"project/add" ,element:<ProjectForm/> },
+      {path:"audit_trail/add" ,element:<AuditTrailForm/> },
 
 
     ],

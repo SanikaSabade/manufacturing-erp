@@ -11,10 +11,7 @@ const employeeSchema = new mongoose.Schema({
   end_date: Date,
   skill_set: [String], 
   shift: String,
-  supervisor_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Employee",
-  },
+  supervisor_id: String,
   createdAt: { type: Date, default: Date.now },
 });
 

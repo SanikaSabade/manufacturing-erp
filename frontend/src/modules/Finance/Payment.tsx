@@ -1,26 +1,49 @@
 import React, { useEffect, useState } from "react";
-
 import axios from "../../utils/axios";
+import {
+  Typography,
+  TextField,
+  Button,
+  Stack,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  type SelectChangeEvent
+} from "@mui/material";
 
 interface Payment {
   _id: string;
   type: "Incoming" | "Outgoing";
   amount: number;
-  reference?: string;
+  reference_number?: string;
   date: string;
   mode?: string;
   notes?: string;
+  approved_by?: { _id: string; name: string };
   createdAt: string;
 }
 
 const Payments: React.FC = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [employees, setEmployees] = useState<{ _id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingPayment, setEditingPayment] = useState<Payment | null>(null);
 
   useEffect(() => {
     fetchPayments();
+    fetchEmployees();
   }, []);
+
+  const fetchEmployees = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}api/employees`);
+      setEmployees(res.data);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
+  };
+  
 
   const fetchPayments = async () => {
     setLoading(true);
@@ -45,10 +68,18 @@ const Payments: React.FC = () => {
     }
   };
 
-  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement  | HTMLTextAreaElement  >) => {
     const { name, value } = e.target;
     setEditingPayment(prev => prev ? { ...prev, [name]: name === "amount" ? +value : value } : null);
   };
+
+  const handleEditSelectChange = (e: SelectChangeEvent) => {
+    const { name, value } = e.target;
+    setEditingPayment((prev) =>
+      prev ? { ...prev, [name]: value } : null
+    );
+  };
+  
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,94 +170,117 @@ const Payments: React.FC = () => {
         </div>
 
         {editingPayment && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Edit Payment</h3>
-            </div>
-            <form onSubmit={handleEditSubmit} className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
-                  <select
-                    name="type"
-                    value={editingPayment.type}
-                    onChange={handleEditChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                  >
-                    <option value="Incoming">Incoming</option>
-                    <option value="Outgoing">Outgoing</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Amount (₹)</label>
-                  <input
-                    name="amount"
-                    value={editingPayment.amount}
-                    onChange={handleEditChange}
-                    type="number"
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    placeholder="Enter amount"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Reference</label>
-                  <input
-                    name="reference"
-                    value={editingPayment.reference || ""}
-                    onChange={handleEditChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    placeholder="Enter reference"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
-                  <input
-                    name="date"
-                    type="date"
-                    value={editingPayment.date.slice(0, 10)}
-                    onChange={handleEditChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Mode</label>
-                  <input
-                    name="mode"
-                    value={editingPayment.mode || ""}
-                    onChange={handleEditChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    placeholder="Enter mode"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
-                  <input
-                    name="notes"
-                    value={editingPayment.notes || ""}
-                    onChange={handleEditChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    placeholder="Enter notes"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  type="submit"
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                >
-                  Save Changes
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEditingPayment(null)}
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+  <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8 p-4">
+    <Typography variant="h6" fontWeight="bold" gutterBottom>
+      Edit Payment
+    </Typography>
+    <form onSubmit={handleEditSubmit}>
+      <Stack spacing={3}>
+      <FormControl fullWidth>
+  <InputLabel>Type</InputLabel>
+  <Select
+    name="type"
+    value={editingPayment.type}
+    onChange={handleEditSelectChange}
+    label="Type"
+  >
+    <MenuItem value="Incoming">Incoming</MenuItem>
+    <MenuItem value="Outgoing">Outgoing</MenuItem>
+  </Select>
+</FormControl>
+
+
+        <TextField
+          label="Amount (₹)"
+          name="amount"
+          value={editingPayment.amount}
+          onChange={handleEditChange}
+          type="number"
+          required
+          fullWidth
+        />
+
+        <TextField
+          label="Reference"
+          name="reference"
+          value={editingPayment.reference_number || ""}
+          onChange={handleEditChange}
+          fullWidth
+        />
+
+        <TextField
+          label="Date"
+          name="date"
+          value={editingPayment.date.slice(0, 10)}
+          onChange={handleEditChange}
+          required
+          fullWidth
+          type="date"
+          InputLabelProps={{ shrink: true }}
+        />
+
+        <TextField
+          label="Mode"
+          name="mode"
+          value={editingPayment.mode || ""}
+          onChange={handleEditChange}
+          fullWidth
+        />
+
+        <TextField
+          label="Notes"
+          name="notes"
+          value={editingPayment.notes || ""}
+          onChange={handleEditChange}
+          fullWidth
+        />
+
+        <FormControl fullWidth>
+          <InputLabel>Approved By</InputLabel>
+          <Select
+            name="approved_by"
+            value={editingPayment.approved_by?._id || ""}
+            onChange={(e) =>
+              setEditingPayment((prev) =>
+                prev
+                  ? {
+                      ...prev,
+                      approved_by: { _id: e.target.value, name: "" },
+                    }
+                  : null
+              )
+            }
+            label="Approved By"
+          >
+            <MenuItem value="">None</MenuItem>
+            {employees.map((emp) => (
+              <MenuItem key={emp._id} value={emp._id}>
+                {emp.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant="contained"
+            color="success"
+            type="submit"
+          >
+            Save Changes
+          </Button>
+          <Button
+            variant="outlined"
+            color="inherit"
+            onClick={() => setEditingPayment(null)}
+          >
+            Cancel
+          </Button>
+        </Stack>
+      </Stack>
+    </form>
+  </div>
+)}
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
@@ -238,10 +292,11 @@ const Payments: React.FC = () => {
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference Number</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mode</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Approved By</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
                   <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
@@ -266,7 +321,7 @@ const Payments: React.FC = () => {
                         <div className="text-sm font-medium text-gray-900">₹{payment.amount.toFixed(2)}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{payment.reference || "—"}</div>
+                        <div className="text-sm text-gray-900">{payment.reference_number || "—"}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">{new Date(payment.date).toLocaleDateString()}</div>
@@ -277,6 +332,15 @@ const Payments: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">{payment.notes || "—"}</div>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+  <div className="text-sm text-gray-900">
+    {payment.approved_by && typeof payment.approved_by === "object"
+      ? payment.approved_by.name
+      : employees.find(emp => emp._id === (payment.approved_by as unknown as string))?.name || "—"}
+  </div>
+</td>
+
+
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">{new Date(payment.createdAt).toLocaleDateString()}</div>
                       </td>

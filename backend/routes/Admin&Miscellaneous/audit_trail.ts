@@ -1,5 +1,5 @@
 import express from "express";
-import AuditTrail from '../../models/Admin&Miscellaneous/audit_trial';
+import AuditTrail from '../../models/Admin&Miscellaneous/audit_trail';
 
 const router = express.Router();
 
@@ -14,24 +14,14 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (_req, res) => {
   try {
-    const entries = await AuditTrail.find();
+    const entries = await AuditTrail.find()
     res.json(entries);
   } catch (error) {
     res.status(500).json({ error });
   }
 });
 
-router.get("/:id", async (req, res) => {
-  try {
-    const entry = await AuditTrail.findById(req.params.id);
-    if (!entry) {
-      return res.status(404).json({ error: "Audit entry not found" });
-    }
-    res.json(entry);
-  } catch (error) {
-    res.status(500).json({ error });
-  }
-});
+
 
 router.put("/:id", async (req, res) => {
   try {

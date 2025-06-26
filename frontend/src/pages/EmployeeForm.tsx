@@ -21,6 +21,10 @@ const EmployeeForm: React.FC = () => {
     salary: "",
     joinDate: "",
     status: "Active",
+    end_date: "",
+    skill_set: "",
+    shift: "",
+    supervisor_id: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +41,11 @@ const EmployeeForm: React.FC = () => {
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}api/employees`, {
         ...formData,
         salary: parseFloat(formData.salary),
+        end_date: formData.end_date || null,
+        skill_set: formData.skill_set
+          .split(",")
+          .map((v) => v.trim())
+          .filter((v) => v),
       });
       navigate("/dashboard/hr");
     } catch (err) {
@@ -105,6 +114,36 @@ const EmployeeForm: React.FC = () => {
               fullWidth
               type="date"
               InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              label="End Date"
+              name="end_date"
+              value={formData.end_date}
+              onChange={handleChange}
+              fullWidth
+              type="date"
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              label="Skill Set (comma separated)"
+              name="skill_set"
+              value={formData.skill_set}
+              onChange={handleChange}
+              fullWidth
+            />
+            <TextField
+              label="Shift"
+              name="shift"
+              value={formData.shift}
+              onChange={handleChange}
+              fullWidth
+            />
+            <TextField
+              label="Supervisor ID"
+              name="supervisor_id"
+              value={formData.supervisor_id}
+              onChange={handleChange}
+              fullWidth
             />
             <TextField
               select

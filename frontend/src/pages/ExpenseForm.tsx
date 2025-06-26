@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -7,31 +7,55 @@ import {
   Stack,
   Paper,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
 
 const ExpenseForm: React.FC = () => {
   const [amount, setAmount] = useState<number>(0);
-  const [paidBy, setPaidBy] = useState<string>("");
-  const [date, setDate] = useState<string>("");
-  const [notes, setNotes] = useState<string>("");
+  const [paidBy, setPaidBy] = useState("");
+  const [date, setDate] = useState("");
+  const [notes, setNotes] = useState("");
+  const [expenseType, setExpenseType] = useState("");
+  const [projectId, setProjectId] = useState("");
+  const [recurringFlag, setRecurringFlag] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [projects, setProjects] = useState<{ _id: string; project_name: string }[]>([]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}api/projects`);
+        setProjects(res.data);
+      } catch (error) {
+        console.error("Failed to fetch projects:", error);
+      }
+    }
+    fetchProjects();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
     try {
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}api/expenses`, {
         amount,
         paidBy,
         date,
         notes,
+        expense_type: expenseType,
+        project_id: projectId || undefined,
+        recurring_flag: recurringFlag,
       });
       navigate("/dashboard/finance/expenses");
     } catch (err: any) {
@@ -46,7 +70,6 @@ const ExpenseForm: React.FC = () => {
       <Typography variant="h5" fontWeight="bold" gutterBottom>
         Add Expense
       </Typography>
-
       <Paper elevation={3} sx={{ p: 3, bgcolor: "#fafafa", borderRadius: 2 }}>
         <form onSubmit={handleSubmit}>
           <Stack spacing={3}>
@@ -82,25 +105,41 @@ const ExpenseForm: React.FC = () => {
               multiline
               rows={3}
             />
-            {error && (
-              <Alert severity="error">
-                {error}
-              </Alert>
-            )}
-            <Stack direction="row" justifyContent="center" spacing={2}>
-              <Button
-                variant="contained"
-                color="success"
-                type="submit"
-                disabled={loading}
+            <TextField
+              label="Expense Type"
+              value={expenseType}
+              onChange={(e) => setExpenseType(e.target.value)}
+              fullWidth
+            />
+            <FormControl fullWidth>
+              <InputLabel>Project</InputLabel>
+              <Select
+                value={projectId}
+                onChange={(e) => setProjectId(e.target.value)}
               >
+                <MenuItem value="">None</MenuItem>
+                {projects.map((project) => (
+                  <MenuItem key={project._id} value={project._id}>
+                    {project.project_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={recurringFlag}
+                  onChange={(e) => setRecurringFlag(e.target.checked)}
+                />
+              }
+              label="Recurring Expense"
+            />
+            {error && <Alert severity="error">{error}</Alert>}
+            <Stack direction="row" justifyContent="center" spacing={2}>
+              <Button variant="contained" color="success" type="submit" disabled={loading}>
                 {loading ? "Adding…" : "Add Expense"}
               </Button>
-              <Button
-                variant="outlined"
-                color="inherit"
-                onClick={() => navigate("/dashboard/finance/expenses")}
-              >
+              <Button variant="outlined" color="inherit" onClick={() => navigate("/dashboard/finance/expenses")}>
                 Cancel
               </Button>
             </Stack>

@@ -281,7 +281,7 @@ const SalesOrders: React.FC = () => {
 
               <TextField
                 label="Linked Documents (comma separated)"
-                value={form.linked_documents?.join(", ") || ""}
+                value={form.linked_documents?.join(", ") }
                 onChange={(e) =>
                   setForm({ ...form, linked_documents: e.target.value.split(",").map((d) => d.trim()) })
                 }
@@ -468,8 +468,28 @@ const SalesOrders: React.FC = () => {
             <div className="text-sm text-gray-900">{order.approval_status}</div>
           </td>
           <td className="px-6 py-4 whitespace-nowrap">
-            <div className="text-sm text-gray-900">{order.linked_documents?.join(", ") || "N/A"}</div>
-          </td>
+  {order.linked_documents && order.linked_documents.length > 0 && order.linked_documents.some((url) => url.trim() !== "") ? (
+    <div className="flex flex-col space-y-1">
+      {order.linked_documents
+        .filter((url) => url.trim() !== "")
+        .map((url, index) => (
+          <a
+            key={index}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline text-sm"
+          >
+            Document {index + 1}
+          </a>
+        ))}
+    </div>
+  ) : (
+    <span className="text-gray-500">N/A</span>
+  )}
+</td>
+
+
           <td className="px-6 py-4 whitespace-nowrap">
           {typeof order.last_updated_by === "object"
       ? (order.last_updated_by as any).name

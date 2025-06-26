@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../utils/axios";
+import { TextField, Button, Stack, Select, MenuItem } from "@mui/material";
+
 
 interface Employee {
   _id: string;
@@ -10,6 +12,10 @@ interface Employee {
   salary: number;
   joinDate: string;
   status: "Active" | "Inactive";
+  end_date?: string;
+  skill_set?: string[];
+  shift?: string;
+  supervisor_id?: string;
   createdAt: string;
 }
 
@@ -49,11 +55,16 @@ const Employees: React.FC = () => {
     }
   };
 
-  const handleEditChange = (field: keyof Employee, value: string | number) => {
-    if (editingEmployee) {
-      setEditingEmployee({ ...editingEmployee, [field]: value });
+  const handleEditChange = (field: keyof Employee, value: any) => {
+    if (!editingEmployee) return;
+  
+    if (field === "skill_set") {
+      value = value.split(",").map((v: string) => v.trim());
     }
+  
+    setEditingEmployee({ ...editingEmployee, [field]: value });
   };
+  
 
   const handleEditSubmit = async () => {
     try {
@@ -145,96 +156,105 @@ const Employees: React.FC = () => {
         </div>
 
         {editingEmployee && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Edit Employee</h3>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                  <input
-                    value={editingEmployee.name || ""}
-                    onChange={(e) => handleEditChange("name", e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    placeholder="Enter name"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                  <input
-                    value={editingEmployee.email || ""}
-                    onChange={(e) => handleEditChange("email", e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    placeholder="Enter email"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                  <input
-                    value={editingEmployee.phone || ""}
-                    onChange={(e) => handleEditChange("phone", e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    placeholder="Enter phone"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-                  <input
-                    value={editingEmployee.role || ""}
-                    onChange={(e) => handleEditChange("role", e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    placeholder="Enter role"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Salary (₹)</label>
-                  <input
-                    type="number"
-                    value={editingEmployee.salary || ""}
-                    onChange={(e) => handleEditChange("salary", parseFloat(e.target.value))}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                    placeholder="Enter salary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Join Date</label>
-                  <input
-                    type="date"
-                    value={editingEmployee.joinDate || ""}
-                    onChange={(e) => handleEditChange("joinDate", e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                  <select
-                    value={editingEmployee.status || "Active"}
-                    onChange={(e) => handleEditChange("status", e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-                  >
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-                  </select>
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={handleEditSubmit}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                >
-                  Save Changes
-                </button>
-                <button
-                  onClick={() => setEditingEmployee(null)}
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+  <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+    <div className="px-6 py-4 border-b border-gray-200">
+      <h3 className="text-lg font-semibold text-gray-900">Edit Employee</h3>
+    </div>
+    <div className="p-6">
+      <Stack spacing={3}>
+        <TextField
+          label="Name"
+          required
+          value={editingEmployee.name || ""}
+          onChange={(e) => handleEditChange("name", e.target.value)}
+        />
+        <TextField
+          label="Email"
+          required
+          value={editingEmployee.email || ""}
+          onChange={(e) => handleEditChange("email", e.target.value)}
+        />
+        <TextField
+          label="Phone"
+          required
+          value={editingEmployee.phone || ""}
+          onChange={(e) => handleEditChange("phone", e.target.value)}
+        />
+        <TextField
+          label="Role"
+          required
+          value={editingEmployee.role || ""}
+          onChange={(e) => handleEditChange("role", e.target.value)}
+        />
+        <TextField
+          label="Salary (₹)"
+          type="number"
+          value={editingEmployee.salary || ""}
+          onChange={(e) => handleEditChange("salary", parseFloat(e.target.value))}
+        />
+        <TextField
+          label="Join Date"
+          required
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          value={editingEmployee.joinDate || ""}
+          onChange={(e) => handleEditChange("joinDate", e.target.value)}
+        />
+        <TextField
+          label="End Date"
+          required
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          value={editingEmployee.end_date || ""}
+          onChange={(e) => handleEditChange("end_date", e.target.value)}
+        />
+        <TextField
+          label="Skill Set (comma separated)"
+          required
+          value={(editingEmployee.skill_set || []).join(", ")}
+          onChange={(e) => handleEditChange("skill_set", e.target.value)}
+        />
+        <TextField
+          label="Shift"
+          required
+          value={editingEmployee.shift || ""}
+          onChange={(e) => handleEditChange("shift", e.target.value)}
+        />
+        <TextField
+                  label="Supervisor "
+                  required
+          value={editingEmployee.supervisor_id || ""}
+          onChange={(e) => handleEditChange("supervisor_id", e.target.value)}
+        >
+        </TextField>
+        <Select
+          value={editingEmployee.status || "Active"}
+          onChange={(e) => handleEditChange("status", e.target.value)}
+        >
+          <MenuItem value="Active">Active</MenuItem>
+          <MenuItem value="Inactive">Inactive</MenuItem>
+        </Select>
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleEditSubmit}
+          >
+            Save Changes
+          </Button>
+          <Button
+            variant="contained"
+            color="inherit"
+            onClick={() => setEditingEmployee(null)}
+          >
+            Cancel
+          </Button>
+        </Stack>
+      </Stack>
+    </div>
+  </div>
+)}
+
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
@@ -251,8 +271,13 @@ const Employees: React.FC = () => {
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Salary (₹)</th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Join Date</th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">End Date</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Skill Set</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Shift</th>
+                  <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Supervisor</th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -289,6 +314,32 @@ const Employees: React.FC = () => {
                         <div className="text-sm text-gray-900">{new Date(emp.joinDate).toLocaleDateString()}</div>
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap">{getStatusBadge(emp.status)}</td>
+                      <td className="px-3 py-2 whitespace-nowrap">
+  <div className="text-sm text-gray-900">
+    {emp.end_date ? new Date(emp.end_date).toLocaleDateString() : "N/A"}
+  </div>
+</td>
+<td className="px-3 py-2 whitespace-nowrap">
+  <div className="text-sm text-gray-900">
+    {emp.skill_set && emp.skill_set.length > 0 ? (
+      <ul className="list-disc pl-4">
+        {emp.skill_set.map((skill, index) => (
+          <li key={index}>{skill}</li>
+        ))}
+      </ul>
+    ) : (
+      "N/A"
+    )}
+  </div>
+</td>
+
+<td className="px-3 py-2 whitespace-nowrap">
+  <div className="text-sm text-gray-900">{emp.shift || "N/A"}</div>
+</td>
+<td className="px-3 py-2 whitespace-nowrap">
+  <div className="text-sm text-gray-900">{emp.supervisor_id || "N/A"}</div>
+</td>
+
                       <td className="px-3 py-2 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
                           <button

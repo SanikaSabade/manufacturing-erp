@@ -23,7 +23,7 @@ import {
   
 } from "react-icons/fa";
 
-import { FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { FiBell, FiBriefcase, FiChevronDown, FiChevronRight, FiFileText } from "react-icons/fi";
 
 const SidebarLinks = [
   {
@@ -180,6 +180,30 @@ const SidebarLinks = [
         ],
       },
       {
+        path: "/dashboard/admin/audit_trail",
+        label: "Audit Trail",
+        icon: <FiFileText />,
+        submenu: [
+          {
+            path: "/dashboard/audit_trail/add",
+            label: "Add Audit Trail",
+            icon: <FaPlus />,
+          },
+        ],
+      },
+      {
+        path: "/dashboard/admin/notification",
+        label: "Notification",
+        icon: < FiBell  />,
+        submenu: [
+          {
+            path: "/dashboard/notification/add",
+            label: "Add Notification",
+            icon: <FaPlus />,
+          },
+        ],
+      },
+      {
         path: "/dashboard/admin/activity-log",
         label: "Activity-logs",
         icon: <FaUserCog />,
@@ -211,6 +235,19 @@ const SidebarLinks = [
       },
     ],
   },
+  {
+    path: "/dashboard/projects",
+    label: "Project",
+    icon: <FiBriefcase />,
+    color: "from-indigo-500 to-indigo-600",
+    submenu: [
+      {
+        path: "/dashboard/project/add",
+        label: "Add Project",
+        icon: <FaPlus />,
+      },
+    ]
+    }
 ];
 
 const DashboardLayout: React.FC = () => {

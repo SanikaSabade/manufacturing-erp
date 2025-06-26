@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -14,9 +14,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 
+interface Employee {
+  _id: string;
+  name: string;
+}
+
 const PaymentForm: React.FC = () => {
   const navigate = useNavigate();
-
   const [form, setForm] = useState({
     type: "Outgoing",
     amount: "",
@@ -24,8 +28,22 @@ const PaymentForm: React.FC = () => {
     date: "",
     mode: "",
     notes: "",
+    approved_by: "",
   });
   const [loading, setLoading] = useState(false);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}api/employees`);
+        setEmployees(res.data);
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+      }
+    };
+    fetchEmployees();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<{ value: unknown }>
@@ -87,15 +105,15 @@ const PaymentForm: React.FC = () => {
               fullWidth
               type="number"
             />
-            
+
             <TextField
-              label="Reference"
+              label="Reference Number"
               name="reference"
               value={form.reference}
               onChange={handleChange}
               fullWidth
             />
-            
+
             <TextField
               label="Date"
               name="date"
@@ -106,7 +124,7 @@ const PaymentForm: React.FC = () => {
               type="date"
               InputLabelProps={{ shrink: true }}
             />
-            
+
             <TextField
               label="Mode"
               name="mode"
@@ -114,7 +132,7 @@ const PaymentForm: React.FC = () => {
               onChange={handleChange}
               fullWidth
             />
-            
+
             <TextField
               label="Notes"
               name="notes"
@@ -122,6 +140,25 @@ const PaymentForm: React.FC = () => {
               onChange={handleChange}
               fullWidth
             />
+
+            <FormControl fullWidth>
+              <InputLabel>Approved By</InputLabel>
+              <Select
+                name="approved_by"
+                value={form.approved_by}
+                onChange={handleSelectChange}
+                label="Approved By"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {employees.map((emp) => (
+                  <MenuItem key={emp._id} value={emp._id}>
+                    {emp.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             <Stack direction="row" justifyContent="center" spacing={2}>
               <Button

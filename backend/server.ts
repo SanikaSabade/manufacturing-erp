@@ -25,7 +25,7 @@ import machineRoutes from './routes/Inventory/machines';
 import qualityCheckRoutes from './routes/Inventory/quality_checks';
 import maintenanceLogRoutes from './routes/Inventory/maintenance_logs';
 import projectRoutes from './routes/Projects/projects';
-import auditTrailRoutes from './routes/Admin&Miscellaneous/audit_trial';
+import auditTrailRoutes from './routes/Admin&Miscellaneous/audit_trail';
 import notificationRoutes from './routes/Admin&Miscellaneous/notifications';
 
 

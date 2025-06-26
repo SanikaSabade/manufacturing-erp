@@ -10,7 +10,7 @@ import {
   Typography,
   Stack,
   Paper,
-} from "@mui/material"; 
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 
@@ -27,13 +27,17 @@ const AttendanceForm: React.FC = () => {
     checkIn: "",
     checkOut: "",
     status: "Present",
+    shift: "",
+    remarks: "",
+    working_hours: "",
+    overtime_hours: "",
   });
-  const { employee, date, checkIn, checkOut, status } = form;
+  const { employee, date, checkIn, checkOut, status, shift, remarks, working_hours, overtime_hours } = form;
 
   const navigate = useNavigate();
 
   const convertToISO = (time: string) => {
-    return time ? new Date(`${date}T${time}:00.000Z`) : null;
+    return time && date ? new Date(`${date}T${time}:00.000Z`) : null;
   };
   
   useEffect(() => {
@@ -45,6 +49,7 @@ const AttendanceForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       await axios.post("/api/attendance", {
         employee,
@@ -52,6 +57,10 @@ const AttendanceForm: React.FC = () => {
         checkIn: convertToISO(checkIn),
         checkOut: convertToISO(checkOut),
         status,
+        shift,
+        remarks,
+        working_hours: Number(working_hours),
+        overtime_hours: Number(overtime_hours),
       });
       navigate("/dashboard/hr/attendance");
     } catch (err) {
@@ -125,6 +134,36 @@ const AttendanceForm: React.FC = () => {
               </Select>
             </FormControl>
 
+            <TextField
+              label="Shift"
+              value={shift}
+              onChange={(e) => setForm({ ...form, shift: e.target.value })}
+              fullWidth
+            />
+
+            <TextField
+              label="Remarks"
+              value={remarks}
+              onChange={(e) => setForm({ ...form, remarks: e.target.value })}
+              fullWidth
+            />
+
+            <TextField
+              label="Working Hours"
+              type="number"
+              value={working_hours}
+              onChange={(e) => setForm({ ...form, working_hours: e.target.value })}
+              fullWidth
+            />
+
+            <TextField
+              label="Overtime Hours"
+              type="number"
+              value={overtime_hours}
+              onChange={(e) => setForm({ ...form, overtime_hours: e.target.value })}
+              fullWidth
+            />
+
             <Stack direction="row" justifyContent="center" spacing={2}>
               <Button variant="contained" color="success" type="submit">
                 Submit Attendance
@@ -145,3 +184,4 @@ const AttendanceForm: React.FC = () => {
 };
 
 export default AttendanceForm;
+
