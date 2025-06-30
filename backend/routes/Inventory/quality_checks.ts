@@ -11,14 +11,18 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.get('/', async (_req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const qcs = await QualityCheck.find();
+    const qcs = await QualityCheck.find()
+      .populate('work_order_id', 'orderNumber')
+      .populate('inspected_by', 'name')         
+      .sort({ createdAt: -1 });
     res.json(qcs);
   } catch (error) {
     res.status(500).json({ error });
   }
 });
+
 
 
 router.put('/:id', async (req, res) => {

@@ -334,7 +334,7 @@ const PurchaseOrderForm: React.FC = () => {
               <Button variant="contained" color="success" type="submit">
                 Save Purchase Order
               </Button>
-              <Button variant="contained" color="inherit" onClick={() => navigate("/dashboard/purchase")}>
+              <Button variant="outlined" color="inherit" onClick={() => navigate("/dashboard/purchase")}>
                 Cancel
               </Button>
             </Stack>

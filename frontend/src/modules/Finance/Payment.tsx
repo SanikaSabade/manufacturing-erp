@@ -70,7 +70,7 @@ const Payments: React.FC = () => {
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement  | HTMLTextAreaElement  >) => {
     const { name, value } = e.target;
-    setEditingPayment(prev => prev ? { ...prev, [name]: name === "amount" ? +value : value } : null);
+    setEditingPayment(prev => prev ? { ...prev, [name]: name === "amount" ? Number(value) : value } : null);
   };
 
   const handleEditSelectChange = (e: SelectChangeEvent) => {
@@ -202,7 +202,7 @@ const Payments: React.FC = () => {
 
         <TextField
           label="Reference"
-          name="reference"
+          name="reference_number"
           value={editingPayment.reference_number || ""}
           onChange={handleEditChange}
           fullWidth
@@ -270,7 +270,7 @@ const Payments: React.FC = () => {
             Save Changes
           </Button>
           <Button
-            variant="outlined"
+            variant="contained"
             color="inherit"
             onClick={() => setEditingPayment(null)}
           >

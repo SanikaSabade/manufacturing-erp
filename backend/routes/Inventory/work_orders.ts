@@ -13,7 +13,8 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (_req, res) => {
   try {
-    const workOrders = await WorkOrder.find();
+    const workOrders = await WorkOrder.find()
+    .populate("machine_id", "machine_name");
     res.json(workOrders);
   } catch (error) {
     res.status(500).json({ error });

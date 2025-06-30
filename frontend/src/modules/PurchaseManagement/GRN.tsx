@@ -275,7 +275,7 @@ const GRNComponent: React.FC = () => {
                 ) : (
                   grns.map((grn) => (
                     <tr key={grn._id} className="hover:bg-gray-50 transition-colors duration-200">
-                      <td className="px-3 py-2 max-w-[120px] whitespace-normal break-words">
+                      <td className="px-3 py-2 max-w-[120px] whitespace-nowrap ">
                         <div className="text-sm text-gray-900 truncate">{grn.purchaseOrder?._id || "N/A"}</div>
                       </td>
                       <td className="px-3 py-2 whitespace-nowrap">
@@ -285,7 +285,7 @@ const GRNComponent: React.FC = () => {
                         <ul className="text-sm text-gray-900 space-y-1">
                           {grn.receivedItems.map((item, idx) => (
                             <li key={idx} className="flex items-center gap-2">
-                              <span className="truncate">
+                              <span className="">
                                 {item.material?.material_name || "N/A"} – {item.quantity} pcs
                               </span>
                               {getInspectedBadge(item.inspected)}

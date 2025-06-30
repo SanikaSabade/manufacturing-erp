@@ -37,6 +37,16 @@ import AuditTrail from "../modules/AdminMiscellaneous/Audit_trail";
 import AuditTrailForm from "../pages/AuditTrailForm";
 import NotificationPage from "../modules/AdminMiscellaneous/Notification";
 import NotificationForm from "../pages/NotificationForm";
+import BOMPage from "../modules/Inventory/BOM";
+import Machines from "../modules/Inventory/Machine";
+import MaintenanceLogs from "../modules/Inventory/MaintenanceLogs";
+import QualityChecks from "../modules/Inventory/QualityCheck";
+import WorkOrders from "../modules/Inventory/WorkOrder";
+import BOMForm from "../pages/BOMForm";
+import MachineForm from "../pages/MachineForm";
+import MaintenanceLogForm from "../pages/MaintenanceForm";
+import QualityCheckForm from "../pages/QualityCheckForm";
+import WorkOrderForm from "../pages/WorkOrderForm";
 
 
 export const router = createBrowserRouter([
@@ -61,6 +71,16 @@ export const router = createBrowserRouter([
       { path: "admin/activity-log", element: <ActivityLogs /> },
       { path: "inventory", element: <InventoryLogs /> },
       { path: "inventory/material", element: <Materials/> },
+      { path: "inventory/BOM", element: <BOMPage/> },
+      { path: "BOM/add", element: <BOMForm/> },
+      { path: "machine/add", element: <MachineForm/> },
+      { path: "maintenanceLogs/add", element: <MaintenanceLogForm/> },
+      { path: "qualityChecks/add", element: <QualityCheckForm/> },
+      { path: "workOrders/add", element: <WorkOrderForm/> },
+      { path: "inventory/machine", element: <Machines/> },
+      { path: "inventory/maintenanceLogs", element: <MaintenanceLogs/> },
+      { path: "inventory/qualityChecks", element: <QualityChecks/> },
+      { path: "inventory/workOrders", element: <WorkOrders/> },
       { path: "sales/add", element: <SalesOrderForm /> },
       {path:"customers/add" ,element:<CustomerForm /> },
       {path:"invoices/add" ,element:<InvoiceForm /> },
@@ -81,8 +101,6 @@ export const router = createBrowserRouter([
       {path:"notification/add" ,element:<NotificationForm/> },
       {path:"project/add" ,element:<ProjectForm/> },
       {path:"audit_trail/add" ,element:<AuditTrailForm/> },
-
-
     ],
   },
 ]);

@@ -44,7 +44,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/materials', materialRoutes);
 app.use('/api/inventory-logs', inventoryLogRoutes);
 app.use('/api/work-orders', workOrderRoutes);
-app.use('/api/boms', bomRoutes);
+app.use('/api/bom', bomRoutes);
 app.use('/api/machines', machineRoutes);
 app.use('/api/quality-checks', qualityCheckRoutes);
 app.use('/api/maintenance-logs', maintenanceLogRoutes);

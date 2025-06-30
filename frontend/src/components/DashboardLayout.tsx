@@ -20,7 +20,7 @@ import {
   FaReceipt,
   FaUserCog,
   FaHome,
-  
+  FaFileAlt, FaIndustry, FaWrench, FaCheckCircle, FaClipboardList  
 } from "react-icons/fa";
 
 import { FiBell, FiBriefcase, FiChevronDown, FiChevronRight, FiFileText } from "react-icons/fi";
@@ -229,6 +229,62 @@ const SidebarLinks = [
           {
             path: "/dashboard/material/add",
             label: "Add Material",
+            icon: <FaPlus />,
+          },
+        ],
+      },
+      {
+        path: "/dashboard/inventory/BOM",
+        label: "BOM",
+        icon: <FaFileAlt />,
+        submenu: [
+          {
+            path: "/dashboard/BOM/add",
+            label: "Add BOM",
+            icon: <FaPlus />,
+          },
+        ],
+      },{
+        path: "/dashboard/inventory/machine",
+        label: "Machine",
+        icon: <FaIndustry/>,
+        submenu: [
+          {
+            path: "/dashboard/machine/add",
+            label: "Add Machine",
+            icon: <FaPlus />,
+          },
+        ],
+      },{
+        path: "/dashboard/inventory/maintenanceLogs",
+        label: "Maintenance Log",
+        icon: <FaWrench />,
+        submenu: [
+          {
+            path: "/dashboard/maintenanceLogs/add",
+            label: "Add Maintenance Log",
+            icon: <FaPlus />,
+          },
+        ],
+      },{
+        path: "/dashboard/inventory/qualityChecks",
+        label: "Quality Check",
+        icon: <FaCheckCircle />,
+        submenu: [
+          {
+            path: "/dashboard/qualityChecks/add",
+            label: "Add Quality Check",
+            icon: <FaPlus />,
+          },
+        ],
+      },{
+        path: "/dashboard/inventory/workOrders",
+        label: "Work Order",
+        icon: <FaClipboardList />,
+        submenu: [
+          {
+            path: "/dashboard/workOrders/add",
+            label: "Add Work Order",
             icon: <FaPlus />,
           },
         ],
