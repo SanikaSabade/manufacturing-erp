@@ -12,7 +12,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 
 interface Employee {
   _id: string;

@@ -1,5 +1,5 @@
 import { createBrowserRouter} from "react-router-dom";
-import Login from "../pages/Login";
+import Login from "../pages/Auth/Login";
 import DashboardLayout from "../components/DashboardLayout";
 import SalesOrders from "../modules/SalesOrders/SalesOrder";
 import Customers from "../modules/SalesOrders/Customer";
@@ -16,44 +16,48 @@ import Settings from "../modules/AdminMiscellaneous/Settings";
 import ActivityLogs from "../modules/AdminMiscellaneous/ActivityLog";
 import InventoryLogs from "../modules/Inventory/InventoryLog";
 import Materials from "../modules/Inventory/Material";
-import SalesOrderForm from "../pages/SalesOrderForm";
-import CustomerForm from "../pages/CustomerForm";
-import InvoiceForm from "../pages/InvoiceForm";
-import PurchaseOrderForm from "../pages/PurchaseOrderForm";
-import SupplierForm from "../pages/SupplierForm";
-import GRNForm from "../pages/GRNForm";
-import EmployeeForm from "../pages/EmployeeForm";
-import AttendanceForm from "../pages/AttendanceForm";
-import PaymentForm from "../pages/PaymentForm";
-import ExpenseForm from "../pages/ExpenseForm";
-import InventoryForm from "../pages/InventoryForm";
-import MaterialForm from "../pages/MaterialForm";
-import SettingForm from "../pages/SettingForm";
-import UserForm from "../pages/UserFrom";
+import SalesOrderForm from "../pages/Forms/SalesOrderForm";
+import CustomerForm from "../pages/Forms/CustomerForm";
+import InvoiceForm from "../pages/Forms/InvoiceForm";
+import PurchaseOrderForm from "../pages/Forms/PurchaseOrderForm";
+import SupplierForm from "../pages/Forms/SupplierForm";
+import GRNForm from "../pages/Forms/GRNForm";
+import EmployeeForm from "../pages/Forms/EmployeeForm";
+import AttendanceForm from "../pages/Forms/AttendanceForm";
+import PaymentForm from "../pages/Forms/PaymentForm";
+import ExpenseForm from "../pages/Forms/ExpenseForm";
+import InventoryForm from "../pages/Forms/InventoryForm";
+import MaterialForm from "../pages/Forms/MaterialForm";
+import SettingForm from "../pages/Forms/SettingForm";
+import UserForm from "../pages/Forms/UserFrom";
 import DashboardHome from "../components/Dashboardhome";
 import Projects from "../modules/Projects/Project";
-import ProjectForm from "../pages/ProjectForm";
+import ProjectForm from "../pages/Forms/ProjectForm";
 import AuditTrail from "../modules/AdminMiscellaneous/Audit_trail";
-import AuditTrailForm from "../pages/AuditTrailForm";
+import AuditTrailForm from "../pages/Forms/AuditTrailForm";
 import NotificationPage from "../modules/AdminMiscellaneous/Notification";
-import NotificationForm from "../pages/NotificationForm";
+import NotificationForm from "../pages/Forms/NotificationForm";
 import BOMPage from "../modules/Inventory/BOM";
 import Machines from "../modules/Inventory/Machine";
 import MaintenanceLogs from "../modules/Inventory/MaintenanceLogs";
 import QualityChecks from "../modules/Inventory/QualityCheck";
 import WorkOrders from "../modules/Inventory/WorkOrder";
-import BOMForm from "../pages/BOMForm";
-import MachineForm from "../pages/MachineForm";
-import MaintenanceLogForm from "../pages/MaintenanceForm";
-import QualityCheckForm from "../pages/QualityCheckForm";
-import WorkOrderForm from "../pages/WorkOrderForm";
+import BOMForm from "../pages/Forms/BOMForm";
+import MachineForm from "../pages/Forms/MachineForm";
+import MaintenanceLogForm from "../pages/Forms/MaintenanceForm";
+import QualityCheckForm from "../pages/Forms/QualityCheckForm";
+import WorkOrderForm from "../pages/Forms/WorkOrderForm";
+import Signup from "../pages/Auth/Signup";
+import EmployeeHome from "../components/EmployeeHmoe";
 
 
 export const router = createBrowserRouter([
   { path: "/", element: <Login /> },
+  { path: "/signup", element: <Signup /> }, 
   {
     path: "/dashboard",
     element: <DashboardLayout />,
+    
     children: [
         { index: true, element: <DashboardHome /> },
       { path: "sales", element: <SalesOrders /> },
@@ -103,4 +107,6 @@ export const router = createBrowserRouter([
       {path:"audit_trail/add" ,element:<AuditTrailForm/> },
     ],
   },
+  { path: '/employee/home', element: <EmployeeHome /> },
+
 ]);

@@ -8,7 +8,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 
 const SupplierForm: React.FC = () => {
   const [form, setForm] = useState({

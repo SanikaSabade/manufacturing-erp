@@ -8,7 +8,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 
 interface Customer {
   name: string;

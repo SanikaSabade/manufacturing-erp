@@ -8,7 +8,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 
 const EmployeeForm: React.FC = () => {

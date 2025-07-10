@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 
 interface Customer {
   _id: string;

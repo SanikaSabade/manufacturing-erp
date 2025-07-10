@@ -3,11 +3,19 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import User from '../models/Admin&Miscellaneous/User';
 
 interface AuthRequest extends Request {
-  headers: any;
-  user?: any; 
+  user?: {
+    _id: string;
+    email: string;
+    role: "admin" | "employee" 
+    name: string;
+  };
 }
 
-const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction): Promise<Response | void> => {
+export const authMiddleware = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -29,12 +37,25 @@ const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunctio
       return res.status(401).json({ message: 'User not found' });
     }
 
-    req.user = user; 
+    req.user = {
+      _id: user._id.toString(),     
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    };
+
     next();
   } catch (err) {
+    console.error('Auth error:', err);
     return res.status(401).json({ message: 'Invalid or expired token' });
-    
   }
 };
 
-export default authMiddleware;
+export const authorizeRoles = (...allowedRoles: ('admin' | 'employee')[]) => {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user || !allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ message: 'Access denied: insufficient permissions' });
+    }
+    next();
+  };
+};

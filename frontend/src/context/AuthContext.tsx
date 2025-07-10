@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import  { setupInterceptors } from "../utils/axios";
+import { setupInterceptors } from "../utils/axios";
 
 type User = {
   name: string;
-  role: 'admin' | 'manager' | 'operator';
+  role: 'admin' | 'employee';
   token: string;
 };
 
 type AuthContextType = {
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, role: 'admin' | 'employee') => Promise<void>;
   logout: () => void;
   loading: boolean;
   error: string | null;
@@ -31,11 +31,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, role: 'admin' | 'employee') => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}api/auth/login`, {
+      const route = role === 'admin' ? 'login' : 'login-employee';
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}api/auth/${route}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -55,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
-      setupInterceptors (logout);
+      setupInterceptors(logout);
     } catch (err: any) {
       setError(err.message);
       setUser(null);

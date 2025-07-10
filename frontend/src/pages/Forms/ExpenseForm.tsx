@@ -14,7 +14,7 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 
 const ExpenseForm: React.FC = () => {
