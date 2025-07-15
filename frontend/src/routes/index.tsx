@@ -48,7 +48,7 @@ import MaintenanceLogForm from "../pages/Forms/MaintenanceForm";
 import QualityCheckForm from "../pages/Forms/QualityCheckForm";
 import WorkOrderForm from "../pages/Forms/WorkOrderForm";
 import Signup from "../pages/Auth/Signup";
-import EmployeeHome from "../components/EmployeeHmoe";
+import EmployeeHome from "../components/EmployeeHome";
 
 
 export const router = createBrowserRouter([
@@ -107,6 +107,6 @@ export const router = createBrowserRouter([
       {path:"audit_trail/add" ,element:<AuditTrailForm/> },
     ],
   },
-  { path: '/employee/home', element: <EmployeeHome /> },
+  { path: '/employee', element: <EmployeeHome /> },
 
 ]);
