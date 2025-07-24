@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
   try {
-    const employee = await Employee.create(req.body);
+    const employee = await Employee.create(req.body)
+    Employee.find().populate('user_id', 'name email role');
     res.status(201).json(employee);
   } catch (error) {
     res.status(400).json({ error });

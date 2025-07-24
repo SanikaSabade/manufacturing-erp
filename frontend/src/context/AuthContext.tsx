@@ -4,6 +4,7 @@ import { setupInterceptors } from "../utils/axios";
 type User = {
   name: string;
   role: 'admin' | 'employee';
+  email:string;
   token: string;
 };
 
@@ -51,6 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const userData: User = {
         name: data.user.name,
         role: data.user.role,
+        email: data.user.email,
         token: data.token,
       };
 
